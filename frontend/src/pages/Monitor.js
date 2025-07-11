@@ -13,22 +13,48 @@ const DashboardOverview = () => {
   // ✅ Các chỉ số môi trường
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
-  const [soilPercent, setSoilPercent] = useState(45);
-  const [lux, setLux] = useState(800);
-  const [rainValue, setRainValue] = useState(2.5);
+  const [soilPercent, setSoilPercent] = useState(null);
+  const [lux, setLux] = useState(null);
+  const [rainValue, setRainValue] = useState(null);
 
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   useEffect(() => {
-  const checkLogin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate("/login");
-    }
-  };
-  checkLogin();
-}, [navigate]);
+    const checkLogin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
+      }
+    };
+    checkLogin();
+  }, [navigate]);
 
+  // ✅ 2. Gọi API sensor mỗi 5 giây
+  useEffect(() => {
+    const fetchSensorData = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/latest");
+        const data = await res.json();
+
+        setTemperature(parseFloat(data.temperature));
+        setHumidity(parseFloat(data.humidity));
+        setSoilPercent(parseFloat(data.soilPercent) * 100); // từ 0.14 → 14%
+        setLux(parseFloat(data.lux));
+        setRainValue(parseFloat(data.rainValue));
+      } catch (error) {
+        console.error("Failed to fetch sensor data:", error);
+      }
+    };
+
+    // Gọi lần đầu
+    fetchSensorData();
+
+    // Lặp lại mỗi 5 giây
+    const interval = setInterval(fetchSensorData, 5000);
+
+    // Clear interval khi unmount
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="bg-blue-50">
@@ -83,9 +109,6 @@ const DashboardOverview = () => {
         
       </div>
 
-
-
-
           {/* Sensor feature cards */}
           <div className="bg-white rounded-xl p-6 shadow">
             <h3 className="text-lg font-semibold mb-4">Sensor Controls</h3>
@@ -117,15 +140,28 @@ const DashboardOverview = () => {
 
             <div className="w-60 h-60 rounded-full bg-gradient-to-br from-blue-100 to-white shadow-xl flex items-center justify-center">
               <span className="text-2xl font-bold text-blue-700">
-                {selectedFeature === "Temperature" && `${temperature}°C`}
-                {selectedFeature === "Humidity" && `${humidity}%`}
-                {selectedFeature === "Soil" && `${soilPercent}%`}
-                {selectedFeature === "Lux" && `${lux} lux`}
-                {selectedFeature === "Rain" && `${rainValue.toFixed(1)} mm`}
+                {(selectedFeature === "Temperature" && temperature === null) ||
+                (selectedFeature === "Humidity" && humidity === null) ||
+                (selectedFeature === "Soil" && soilPercent === null) ||
+                (selectedFeature === "Lux" && lux === null) ||
+                (selectedFeature === "Rain" && rainValue === null)
+                  ? "Loading..."
+                  : selectedFeature === "Temperature"
+                  ? `${temperature}°C`
+                  : selectedFeature === "Humidity"
+                  ? `${humidity}%`
+                  : selectedFeature === "Soil"
+                  ? `${soilPercent.toFixed(0)}%`
+                  : selectedFeature === "Lux"
+                  ? `${lux} lux`
+                  : selectedFeature === "Rain"
+                  ? `${rainValue.toFixed(1)} mm`
+                  : ""}
               </span>
             </div>
           </div>
         )}
+
 
         </div>
 
