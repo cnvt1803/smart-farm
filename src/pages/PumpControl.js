@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
-
+import { supabase } from "../components/supabaseClient";
 const ControlPump = () => {
   const [pumpStatus, setPumpStatus] = useState(null);
   const [mode, setMode] = useState("manual");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+  const navigate = useNavigate(); 
   const [thresholds, setThresholds] = useState({
     temperature: 30,
     humidity: 60,
@@ -27,6 +28,16 @@ const ControlPump = () => {
   const handleThresholdChange = (e, key) => {
     setThresholds({ ...thresholds, [key]: e.target.value });
   };
+    useEffect(() => {
+    const checkLogin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
+      }
+    };
+    checkLogin();
+  }, [navigate]);
+  
 
   const handleManualToggle = (status) => {
     setPumpStatus(status);

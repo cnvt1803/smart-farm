@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
+import { useState, useEffect, } from "react";
+import { supabase } from "../components/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -21,6 +19,16 @@ const DashboardOverview = () => {
 
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  useEffect(() => {
+  const checkLogin = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate("/login");
+    }
+  };
+  checkLogin();
+}, [navigate]);
+
 
   return (
     <div className="bg-blue-50">
