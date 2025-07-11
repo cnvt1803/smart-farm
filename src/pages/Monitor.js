@@ -19,10 +19,6 @@ const DashboardOverview = () => {
   const [lux, setLux] = useState(800);
   const [rainValue, setRainValue] = useState(2.5);
 
-  // ✅ Dữ liệu biểu đồ (placeholder)
-  const [tempData, setTempData] = useState([]);
-  const [humidityData, setHumidityData] = useState([]);
-  const [lightData, setLightData] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -37,7 +33,7 @@ const DashboardOverview = () => {
         {/* Sidebar */}
         <div className={`transition-all duration-300 ${isSidebarOpen ? "w-64" : "w-0"}`}>
           <div className={`h-full bg-blue-100 text-blue-800 border-r-4 border-blue-200 ${isSidebarOpen ? "p-4" : "p-0"}`}>
-            {isSidebarOpen && <Sidebar activeItem="overview" />}
+            {isSidebarOpen && <Sidebar activeItem="monitor" />}
           </div>
         </div>
 

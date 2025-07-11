@@ -15,7 +15,6 @@ const ControlPump = () => {
     lux: 500,
     rainValue: 2,
   });
-
   const [schedules, setSchedules] = useState([
     { from: "06:00", to: "06:05" },
     { from: "12:00", to: "12:10" },
@@ -31,7 +30,7 @@ const ControlPump = () => {
 
   const handleManualToggle = (status) => {
     setPumpStatus(status);
-    // TODO: Gửi lệnh tới server/backend
+    // TODO
   };
 
   const handleAddSchedule = () => {
@@ -59,7 +58,7 @@ const ControlPump = () => {
         {/* Sidebar */}
         <div className={`transition-all duration-300 ${isSidebarOpen ? "w-64" : "w-0"}`}>
           <div className={`h-full bg-blue-100 text-blue-800 border-r-4 border-blue-200 ${isSidebarOpen ? "p-4" : "p-0"}`}>
-            {isSidebarOpen && <Sidebar activeItem="control" />}
+            {isSidebarOpen && <Sidebar activeItem="pump_control" />}
           </div>
         </div>
 
@@ -243,8 +242,6 @@ const ControlPump = () => {
           </div>
         </div>
       )}
-
-      {/* Footer */}
       <Footer />
     </div>
   );

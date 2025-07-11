@@ -1,16 +1,16 @@
 import React from "react";
 const Sidebar = ({ activeItem }) => {
+
   const menuGroups = [
     {
       title: "MENU",
       items: [
-        { label: "💡 Light", path: "/dashboard/light", key: "light" },
-        { label: "🌡 Temperature", path: "/dashboard/temperature", key: "temperature" },
-        { label: "💧 Humidity", path: "/dashboard/humidity", key: "humidity" },
-        { label: "🦠 Disease Status", path: "/dashboard/disease-status", key: "disease-status" },
+        { label: "Monitor", path: "/monitor", key: "monitor" },
+        { label: "Pump Control", path: "/pump-control", key: "pump_control" },
       ],
     },
   ];
+
 
   return (
     <div className="w-64 h-[91vh] bg-white p-5 fixed top-[9vh] left-0 shadow-md border border-blue-400 flex flex-col z-50 text-blue-900 overflow-y-auto">
@@ -24,7 +24,7 @@ const Sidebar = ({ activeItem }) => {
           <h3 className="text-[13px] text-gray-600 font-semibold uppercase border-b border-blue-400 pl-2 mb-2">
             {group.title}
           </h3>
-          <ul className="space-y-1">
+          <ul className="space-y-2">
             {group.items.map((item) => (
               <li key={item.key}>
                 <a

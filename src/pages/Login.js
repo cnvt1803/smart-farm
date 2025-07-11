@@ -52,7 +52,7 @@ const LoginPage = () => {
                     </div>
 
                     <button
-                        onClick={() => navigate("/dashboard")}
+                        onClick={() => navigate("/monitor")}
                         type="submit"
                         className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg font-semibold hover:opacity-90 transition"
                     >

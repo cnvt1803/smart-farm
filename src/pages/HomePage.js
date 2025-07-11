@@ -16,7 +16,7 @@ const HomePage = () => {
                 <div className="flex items-center space-x-2">
                     <img src={LogoBk} alt="Logo" className="w-[50px]" />
                     <span className="font-semibold text-lg text-blue-800">
-                    Trường Đại học Bách Khoa - ĐHQG TPHCM
+                    Ho Chi Minh University of Technology
                     </span>
                 </div>
                 <div className="space-x-4">
