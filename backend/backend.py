@@ -11,15 +11,13 @@ import uvicorn
 
 load_dotenv(dotenv_path="backend/.env")
 
-# Biến toàn cục chứa dữ liệu mới nhất từ RabbitMQ
 latest_data = {}
 
 
-def rabbitmq_consumer():
+def mq_consumer():
     print("📡 RabbitMQ consumer starting...")
 
     try:
-        # Thiết lập kết nối từ biến môi trường
         credentials = pika.PlainCredentials(
             os.getenv("FARM_USER"),
             os.getenv("FARM_PASS")
@@ -68,21 +66,18 @@ def rabbitmq_consumer():
     except Exception as e:
         print(f"❌ Failed to connect to RabbitMQ: {e}")
 
-# ✅ Tự động chạy RabbitMQ consumer khi app khởi động
+# ✅ Tự động chạy consumer khi app khởi động
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 FastAPI is starting up...")
-    threading.Thread(target=rabbitmq_consumer, daemon=True).start()
+    threading.Thread(target=mq_consumer, daemon=True).start()
     yield
     print("🛑 FastAPI is shutting down...")
 
-
-# ✅ Tạo app kèm Lifespan
 app = FastAPI(lifespan=lifespan)
 
-# ✅ Middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -97,6 +92,5 @@ def get_latest_data():
     return latest_data
 
 
-# ✅ Chạy server nếu gọi bằng python main.py
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=8000)

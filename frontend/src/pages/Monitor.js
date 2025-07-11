@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
-import image from "../assets/farm.webp"; // Placeholder image  
-
+import image from "../assets/farm.webp"; 
 
 const DashboardOverview = () => {
   const navigate = useNavigate();
 
-  // ✅ Các chỉ số môi trường
+
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
   const [soilPercent, setSoilPercent] = useState(null);
@@ -29,7 +28,7 @@ const DashboardOverview = () => {
     checkLogin();
   }, [navigate]);
 
-  // ✅ 2. Gọi API sensor mỗi 5 giây
+
   useEffect(() => {
     const fetchSensorData = async () => {
       try {
@@ -38,7 +37,7 @@ const DashboardOverview = () => {
 
         setTemperature(parseFloat(data.temperature));
         setHumidity(parseFloat(data.humidity));
-        setSoilPercent(parseFloat(data.soilPercent) * 100); // từ 0.14 → 14%
+        setSoilPercent(parseFloat(data.soilPercent) * 100); 
         setLux(parseFloat(data.lux));
         setRainValue(parseFloat(data.rainValue));
       } catch (error) {
@@ -46,13 +45,11 @@ const DashboardOverview = () => {
       }
     };
 
-    // Gọi lần đầu
+
     fetchSensorData();
 
-    // Lặp lại mỗi 5 giây
     const interval = setInterval(fetchSensorData, 5000);
 
-    // Clear interval khi unmount
     return () => clearInterval(interval);
   }, []);
 

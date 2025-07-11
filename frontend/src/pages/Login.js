@@ -23,7 +23,7 @@ const LoginPage = () => {
     if (error) {
       setError(error.message);
     } else {
-      navigate("/monitor"); // đăng nhập thành công
+      navigate("/monitor"); 
     }
 
     setLoading(false);
