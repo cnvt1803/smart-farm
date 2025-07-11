@@ -13,8 +13,8 @@ const DashboardOverview = () => {
   const navigate = useNavigate();
 
   // ✅ Các chỉ số môi trường
-  const [temperature, setTemperature] = useState(30);
-  const [humidity, setHumidity] = useState(60);
+  const [temperature, setTemperature] = useState(null);
+  const [humidity, setHumidity] = useState(null);
   const [soilPercent, setSoilPercent] = useState(45);
   const [lux, setLux] = useState(800);
   const [rainValue, setRainValue] = useState(2.5);
@@ -28,7 +28,6 @@ const DashboardOverview = () => {
 
   return (
     <div className="bg-blue-50">
-      {/* Header cố định */}
       <div className="fixed top-0 left-0 w-full z-50">
         <Header />
       </div>
@@ -51,11 +50,10 @@ const DashboardOverview = () => {
           {isSidebarOpen ? "◀" : "▶"}
         </button>
 
-        {/* Nội dung chính */}
+        {/* Main content */}
         <div className="flex-1 p-6 pt-[12vh] flex flex-col gap-6">
           {/* Welcome card */}
           <div className="bg-gradient-to-r from-blue-100 to-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Bên trái: Thông tin */}
           <div className="ml-16 flex flex-col gap-2">
             <h2 className="text-3xl font-bold text-blue-700">Hello, Truong 👋</h2>
             <p className="text-gray-700">Always be meticulous when taking care of your smart garden.</p>
@@ -71,8 +69,6 @@ const DashboardOverview = () => {
               </div>
             </div>
           </div>
-
-        {/* Bên phải: Ảnh minh họa */}
         <div className="mr-10 flex-shrink-0">
           <img
             src={image}
@@ -111,12 +107,10 @@ const DashboardOverview = () => {
             </div>
           </div>
 
-          {/* Bộ điều chỉnh giá trị */}
          {selectedFeature && (
           <div className="bg-white rounded-xl p-6 shadow flex flex-col items-center">
             <h4 className="text-lg font-semibold mb-4">{selectedFeature} Information</h4>
 
-            {/* Vòng tròn hiển thị giá trị */}
             <div className="w-60 h-60 rounded-full bg-gradient-to-br from-blue-100 to-white shadow-xl flex items-center justify-center">
               <span className="text-2xl font-bold text-blue-700">
                 {selectedFeature === "Temperature" && `${temperature}°C`}
