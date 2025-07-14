@@ -7,7 +7,7 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold mb-3">🏷️ Name</h3>
           <p>Cao Nguyen Van Truong</p>
-          <p>Đại học Bách Khoa Cơ sở 2</p>
+          <p>Nguyen Le Anh Duc</p>
         </div>
 
         <div>
@@ -19,13 +19,13 @@ const Footer = () => {
         <div className="ml-5">
           <h3 className="font-semibold mb-3">📞  Phone number</h3>
           <p className="ml-6">0967 413 008</p>
-          <p className="ml-6">0123 123 123</p>
+          <p className="ml-6">0983 779 276</p>
         </div>
 
         <div>
           <h3 className="font-semibold mb-3">📧 Email</h3>
           <p>truong.caonguyenvan@hcmut.edu.vn</p>
-          <p>abc.Abcdef@hcmut.edu.vn</p>
+          <p>duc.nguyenterabyte13@hcmut.edu.vn</p>
         </div>
       </div>
 
