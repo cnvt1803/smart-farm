@@ -1,17 +1,30 @@
+from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from contextlib import asynccontextmanager
+from datetime import datetime, timedelta
+from fastapi.responses import PlainTextResponse, JSONResponse
+from fastapi import Request
+import paho.mqtt.publish as publish
 import pika
 import sys
 import json
 import threading
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-from contextlib import asynccontextmanager
 import os
 import uvicorn
+import requests
 
-load_dotenv(dotenv_path="backend/.env")
+load_dotenv(dotenv_path="./.env")
 
 latest_data = {}
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+
+class PumpCommand(BaseModel):
+    command: str = "PUMP_ON"
+    duration: int = 5000  # millisecond
 
 
 def mq_consumer():
@@ -87,9 +100,104 @@ app.add_middleware(
 )
 
 
+@app.post("/api/pump-on")
+def pump_on(payload: PumpCommand):
+    if payload.command != "PUMP_ON":
+        raise HTTPException(status_code=400, detail="Invalid command")
+
+    now = datetime.utcnow()
+    end_time = now + timedelta(milliseconds=payload.duration)
+
+    mqtt_message = {
+        "command": payload.command,
+        "duration": payload.duration
+    }
+
+    try:
+        publish.single(
+            topic=os.getenv("MQTT_TOPIC"),
+            payload=json.dumps(mqtt_message),
+            hostname=os.getenv("MQTT_HOST"),
+            port=int(os.getenv("MQTT_PORT")),
+            auth={
+                "username": os.getenv("MQTT_USER"),
+                "password": os.getenv("MQTT_PASS")
+            }
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"MQTT publish failed: {e}")
+
+    return {
+        "status": "success",
+        "sent_command": mqtt_message,
+        "start": now.isoformat(),
+        "end": end_time.isoformat()
+    }
+
+
 @app.get("/api/latest")
 def get_latest_data():
     return latest_data
+
+
+@app.post("/api/login")
+async def login(request: Request):
+    body = await request.json()
+    email = body.get("email")
+    password = body.get("password")
+
+    if not email or not password:
+        return JSONResponse({"error": "Thiếu email hoặc mật khẩu"}, status_code=400)
+
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return JSONResponse({"error": "Thiếu SUPABASE_URL hoặc SUPABASE_KEY trong biến môi trường"}, status_code=500)
+
+    try:
+        url = f"{SUPABASE_URL}/auth/v1/token?grant_type=password"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "email": email,
+            "password": password
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code != 200:
+            return JSONResponse({"error": response.json()}, status_code=401)
+
+        data = response.json()
+        access_token = data["access_token"]
+        user_id = data["user"]["id"]
+
+        return JSONResponse({
+            "message": "✅ Đăng nhập thành công",
+            "access_token": access_token,
+            "user_id": user_id
+        })
+
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/check-auth")
+async def check_auth(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not token:
+        raise HTTPException(status_code=401, detail="Missing token")
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {token}",
+    }
+
+    res = requests.get(f"{SUPABASE_URL}/auth/v1/user", headers=headers)
+    if res.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    return {"message": "Token is valid"}
 
 
 if __name__ == '__main__':

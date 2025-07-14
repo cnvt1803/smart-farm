@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/footer.png";
-import { supabase } from "../components/supabaseClient";
+import { API_BASE_URL } from "../config"; // ví dụ: http://localhost:8000
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -10,24 +10,40 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); // chặn reload
-    setError("");
-    setLoading(true);
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
 
-    if (error) {
-      setError(error.message);
-    } else {
-      navigate("/monitor"); 
-    }
+    const data = await res.json(); // ✅ Khai báo ở đây trước khi dùng
 
-    setLoading(false);
-  };
+    if (!res.ok) {
+      const message =
+        typeof data.error === "string"
+          ? data.error
+          : data.error?.msg || data.error?.message || "Đăng nhập thất bại";
+
+      setError(message);
+    } else {
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user_id", data.user_id);
+      navigate("/monitor");
+    }
+  } catch (err) {
+    setError("Lỗi kết nối đến máy chủ.");
+  }
+
+  setLoading(false);
+};
+
+
 
   return (
     <div className="flex h-screen justify-center items-center bg-blue-100">

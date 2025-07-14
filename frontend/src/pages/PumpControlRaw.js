@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
@@ -9,6 +9,11 @@ const ControlPump = () => {
   const [mode, setMode] = useState("manual");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate(); 
+  const [showDurationModal, setShowDurationModal] = useState(null);
+  const [durationInput, setDurationInput] = useState(5000);
+  const [pendingPumpStatus, setPendingPumpStatus] = useState(null);
+  const timeoutRef = useRef(null);
+
   const [thresholds, setThresholds] = useState({
     temperature: 30,
     humidity: 60,
@@ -28,42 +33,6 @@ const ControlPump = () => {
   const handleThresholdChange = (e, key) => {
     setThresholds({ ...thresholds, [key]: e.target.value });
   };
-    useEffect(() => {
-        const checkLogin = async () => {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-            navigate("/login");
-            return;
-        }
-
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/check-auth`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            });
-
-            if (!res.ok) {
-            localStorage.removeItem("access_token");
-            navigate("/login");
-            }
-        } catch (err) {
-            console.error("Lỗi xác thực:", err);
-            navigate("/login");
-        }
-        };
-
-        checkLogin();
-    }, [navigate]);
-
-//   const handleManualToggle = (status) => {
-//     setPumpStatus(status);
-//     // TODO
-//   };
-    const handleManualToggle = (status) => {
-        if (pumpStatus === null) return; // Tránh xử lý khi chưa load xong
-       // setPumpStatus(status);
-    };
   useEffect(() => {
     const fetchPumpStatus = async () => {
       try {
@@ -78,10 +47,114 @@ const ControlPump = () => {
       }
     };
 
-    fetchPumpStatus();
-    const interval = setInterval(fetchPumpStatus, 5000); 
-    return () => clearInterval(interval);
+    fetchPumpStatus(); 
   }, []);
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/check-auth`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          localStorage.removeItem("access_token");
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Lỗi xác thực:", err);
+        navigate("/login");
+      }
+    };
+
+    checkLogin();
+  }, [navigate]);
+  
+  // useEffect(() => {
+  //   const fetchPumpStatus = async () => {
+  //     try {
+  //       const res = await fetch(`${API_BASE_URL}/api/latest`);
+  //       const data = await res.json();
+
+  //       if (data && typeof data.pump !== "undefined") {
+  //         setPumpStatus(data.pump === 1 ? "ON" : "OFF");
+  //       }
+  //     } catch (error) {
+  //       console.error("❌ Error fetching pump status:", error);
+  //     }
+  //   };
+
+  //   fetchPumpStatus();
+  //   const interval = setInterval(fetchPumpStatus, 10000); // 3s là hợp lý
+  //   return () => clearInterval(interval);
+  // }, []);
+
+  
+
+  const handleManualToggle = (status) => {
+    if (pumpStatus === null) return; // Tránh xử lý khi chưa load xong
+
+    if (status === "ON") {
+      // Chỉ mở modal nếu hiện tại đang OFF
+      if (pumpStatus === "OFF") {
+        setPendingPumpStatus("ON");
+        setShowDurationModal(true);
+      }
+    } else {
+      // Khi chuyển sang OFF
+      setPumpStatus("OFF");
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    }
+  };
+
+
+  const confirmDurationAndSendCommand = async () => {
+    setShowDurationModal(false);
+    setPumpStatus("ON"); // Cập nhật UI ngay
+
+    const duration = parseInt(durationInput);
+    const now = new Date();
+    const end = new Date(now.getTime() + duration);
+
+    // Xoá timeout cũ nếu có
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+
+    timeoutRef.current = setTimeout(() => {
+      setPumpStatus("OFF");
+      console.log("⏱️ Auto turned OFF after duration");
+    }, duration);
+
+    try {
+      await fetch(`${API_BASE_URL}/api/pump-on`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          command: "PUMP_ON",
+          duration
+        }),
+      });
+      console.log("✅ Pump ON sent");
+    } catch (error) {
+      console.error("❌ Failed to send pump-on command", error);
+      setPumpStatus("OFF");
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+
 
   const handleAddSchedule = () => {
     if (newSchedule.from && newSchedule.to) {
@@ -229,7 +302,7 @@ const ControlPump = () => {
                 onClick={() => setShowModal(true)}
                 className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow"
               >
-                + Add Schedule
+                + Add pump on timer
               </button>
             </div>
             <p className="text-gray-500 mb-2">The pump will run automatically at the following times:</p>
@@ -292,6 +365,44 @@ const ControlPump = () => {
           </div>
         </div>
       )}
+     {showDurationModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+          <h3 className="text-lg font-semibold text-blue-700 mb-4">⏱️ Set Pump Duration</h3>
+          <p className="text-gray-600 mb-2">Enter duration in milliseconds:</p>
+          
+          <div className="flex gap-2 items-center mb-4">    
+            <input
+              type="number"
+              step="1000"
+              value={durationInput}
+              onChange={(e) => setDurationInput(e.target.value)}
+              className="w-full px-4 py-2 border border-blue-300 rounded-lg"
+              placeholder="e.g. 5000"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => {
+                setShowDurationModal(false);
+                setPumpStatus("OFF");
+              }}
+              className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDurationAndSendCommand}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
       <Footer />
     </div>
   );

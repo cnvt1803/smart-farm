@@ -1,10 +1,10 @@
 import { useState, useEffect, } from "react";
-import { supabase } from "../components/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
-import image from "../assets/farm.webp"; 
+import image from "../assets/farm.webp";
 
 const DashboardOverview = () => {
   const navigate = useNavigate();
@@ -18,21 +18,39 @@ const DashboardOverview = () => {
 
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
   useEffect(() => {
     const checkLogin = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/check-auth`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          localStorage.removeItem("access_token");
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Lỗi xác thực:", err);
         navigate("/login");
       }
     };
+
     checkLogin();
   }, [navigate]);
-
-
+  
   useEffect(() => {
     const fetchSensorData = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/latest");
+        const res = await fetch(`${API_BASE_URL}/api/latest`);
         const data = await res.json();
 
         setTemperature(parseFloat(data.temperature));
@@ -82,7 +100,7 @@ const DashboardOverview = () => {
           {/* Welcome card */}
           <div className="bg-gradient-to-r from-blue-100 to-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="ml-16 flex flex-col gap-2">
-            <h2 className="text-3xl font-bold text-blue-700">Hello, Truong 👋</h2>
+            <h2 className="text-3xl font-bold text-blue-700">Hello 👋</h2>
             <p className="text-gray-700">Always be meticulous when taking care of your smart garden.</p>
 
             <div className="mt-2 space-y-1">

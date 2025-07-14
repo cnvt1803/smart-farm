@@ -8,12 +8,10 @@ const Header = () => {
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Lấy user đang login từ Supabase
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Nếu bạn có thêm metadata như full_name thì dùng user.user_metadata.full_name
         setUserName(user.user_metadata?.full_name || user.email);
       }
     };
@@ -52,16 +50,17 @@ const Header = () => {
                 <ul className="py-2 text-sm text-gray-700">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => navigate("/account-settings")}
+                    onClick={() => navigate("/")}
                   >
                     Account settings
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={async () => {
-                      await supabase.auth.signOut(); // ✅ logout khỏi Supabase
-                      navigate("/login");            // 👉 quay lại login
+                    onClick={() => {
+                      localStorage.removeItem("access_token"); // xoá token
+                      navigate("/login");                      // chuyển về login
                     }}
+
                   >
                     Logout
                   </li>

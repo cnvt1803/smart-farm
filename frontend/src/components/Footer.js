@@ -30,7 +30,7 @@ const Footer = () => {
       </div>
 
       <div className="mt-6 text-center text-xs text-blue-700">
-        © 2025 SmartSprout. All rights reserved.
+        © ABC solution - 2025 SmartFarm. All rights reserved.
       </div>
     </footer>
   );
