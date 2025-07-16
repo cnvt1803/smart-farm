@@ -1,0 +1,118 @@
+<mxfile host="65bd71144e">
+    <diagram name="Use-case diagram" id="7WWtMkjA0DIHxJEJIJO2">
+        <mxGraphModel dx="576" dy="284" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="80" width="630" height="940" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-24" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startFill=0;edgeStyle=orthogonalEdgeStyle;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-2" target="kaM_wUpKQOJW-CUFFBUv-18" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="160" y="660"/>
+                            <mxPoint x="160" y="580"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-2" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="620" width="40" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startFill=0;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-4" target="kaM_wUpKQOJW-CUFFBUv-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-4" value="User" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="340" width="40" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-6" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="50" y="610" as="sourcePoint"/>
+                        <mxPoint x="50" y="450" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-12" value="&amp;lt;extended&amp;gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=0;dashed=1;endArrow=none;endFill=1;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-7" target="kaM_wUpKQOJW-CUFFBUv-11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-7" value="Authentication" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="340" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-8" value="Login" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="340" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-10" value="Register" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="430" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-11" value="Change password" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="250" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-15" value="&amp;lt;included&amp;gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-7" target="kaM_wUpKQOJW-CUFFBUv-8" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="212.43" y="681.72" as="sourcePoint"/>
+                        <mxPoint x="330.43" y="509.72" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-16" value="&amp;lt;extended&amp;gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=0;dashed=1;endArrow=none;endFill=1;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-7" target="kaM_wUpKQOJW-CUFFBUv-10" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="270" y="541.72" as="sourcePoint"/>
+                        <mxPoint x="468" y="369.72" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-18" value="Register new sensors" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="540" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-19" value="Validate sensor integration" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="630" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-20" value="Configure and intiate remotes actions" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="720" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-22" value="Generate reports" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="810" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-23" value="Trobleshooting sensor issues&amp;nbsp;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="900" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-25" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startFill=0;edgeStyle=orthogonalEdgeStyle;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-2" target="kaM_wUpKQOJW-CUFFBUv-23" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="40" y="730" as="sourcePoint"/>
+                        <mxPoint x="170" y="650" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="160" y="660"/>
+                            <mxPoint x="160" y="940"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-26" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startFill=0;edgeStyle=orthogonalEdgeStyle;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-2" target="kaM_wUpKQOJW-CUFFBUv-22" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="90" y="610" as="sourcePoint"/>
+                        <mxPoint x="220" y="890" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="160" y="660"/>
+                            <mxPoint x="160" y="850"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-28" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startFill=0;edgeStyle=orthogonalEdgeStyle;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-2" target="kaM_wUpKQOJW-CUFFBUv-20" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="50" y="660" as="sourcePoint"/>
+                        <mxPoint x="180" y="850" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="160" y="660"/>
+                            <mxPoint x="160" y="760"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaM_wUpKQOJW-CUFFBUv-29" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startFill=0;edgeStyle=orthogonalEdgeStyle;" parent="1" source="kaM_wUpKQOJW-CUFFBUv-2" target="kaM_wUpKQOJW-CUFFBUv-19" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="50" y="660" as="sourcePoint"/>
+                        <mxPoint x="180" y="580" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="160" y="660"/>
+                            <mxPoint x="160" y="670"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
