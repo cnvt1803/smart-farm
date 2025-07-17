@@ -63,7 +63,7 @@ const Monitor = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 ">
       {/* Welcome Card */}
       <div className="bg-gradient-to-r from-blue-100 to-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="ml-16 flex flex-col gap-2">
