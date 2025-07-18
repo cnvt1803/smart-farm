@@ -156,10 +156,10 @@ async def login(request: Request):
     password = body.get("password")
 
     if not email or not password:
-        return JSONResponse({"error": "Thiếu email hoặc mật khẩu"}, status_code=400)
+        return JSONResponse({"error": "Missing email or password"}, status_code=400)
 
     if not SUPABASE_URL or not SUPABASE_KEY:
-        return JSONResponse({"error": "Thiếu SUPABASE_URL hoặc SUPABASE_KEY trong biến môi trường"}, status_code=500)
+        return JSONResponse({"error": "unknown error"}, status_code=500)
 
     try:
         url = f"{SUPABASE_URL}/auth/v1/token?grant_type=password"
@@ -181,7 +181,7 @@ async def login(request: Request):
         user_id = data["user"]["id"]
 
         return JSONResponse({
-            "message": "✅ Đăng nhập thành công",
+            "message": "✅ Log in successfully",
             "access_token": access_token,
             "user_id": user_id
         })
@@ -196,7 +196,7 @@ async def forgot_password(request: Request):
     email = body.get("email")
 
     if not email:
-        return JSONResponse({"error": "Vui lòng nhập email"}, status_code=400)
+        return JSONResponse({"error": "Please enter email"}, status_code=400)
 
     try:
         url = f"{SUPABASE_URL}/auth/v1/recover"
@@ -212,7 +212,7 @@ async def forgot_password(request: Request):
         response = requests.post(url, json=payload, headers=headers)
 
         if response.status_code == 200:
-            return JSONResponse({"message": "📩 Email khôi phục mật khẩu đã được gửi."})
+            return JSONResponse({"message": "📩 Password recovery email has been sent."})
         else:
             # Trả về lỗi chi tiết từ Supabase
             return JSONResponse({"error": response.json()}, status_code=response.status_code)
@@ -297,13 +297,13 @@ def decode_token(token: str):
 @app.get("/api/me")
 async def get_current_user(authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
-        return JSONResponse({"error": "Thiếu token"}, status_code=401)
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
 
     token = authorization.replace("Bearer ", "").strip()
     user_id = decode_token(token)
 
     if not user_id:
-        return JSONResponse({"error": "Token không hợp lệ"}, status_code=403)
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
 
     try:
         # Chỉ query user_profiles thôi, không cần đụng auth.users
@@ -314,24 +314,24 @@ async def get_current_user(authorization: str = Header(None)):
             .execute()
 
         if not result.data:
-            return JSONResponse({"error": "Chưa có thông tin user"}, status_code=404)
+            return JSONResponse({"error": "No user information yet"}, status_code=404)
         return JSONResponse(result.data[0])
 
     except Exception as e:
         print("❌ Lỗi lấy user:", e)
-        return JSONResponse({"error": "Lỗi server"}, status_code=500)
+        return JSONResponse({"error": "Server error"}, status_code=500)
 
 
 @app.patch("/api/update-profile")
 async def update_profile(request: Request, authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
-        return JSONResponse({"error": "Thiếu token"}, status_code=401)
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
 
     token = authorization.replace("Bearer ", "").strip()
     user_id = decode_token(token)
 
     if not user_id:
-        return JSONResponse({"error": "Token không hợp lệ"}, status_code=403)
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
 
     try:
         body = await request.json()
@@ -342,18 +342,18 @@ async def update_profile(request: Request, authorization: str = Header(None)):
                 update_data[field] = body[field]
 
         if not update_data:
-            return JSONResponse({"error": "Không có dữ liệu để cập nhật"}, status_code=400)
+            return JSONResponse({"error": "No data to update"}, status_code=400)
 
         result = supabase.table("user_profiles") \
             .update(update_data) \
             .eq("user_id", user_id) \
             .execute()
 
-        return JSONResponse({"message": "Cập nhật thành công", "data": result.data})
+        return JSONResponse({"message": "Updated successfully", "data": result.data})
 
     except Exception as e:
         print("❌ Lỗi cập nhật profile:", e)
-        return JSONResponse({"error": "Lỗi server"}, status_code=500)
+        return JSONResponse({"error": "Error server"}, status_code=500)
 
 
 @app.post("/api/create-profile")

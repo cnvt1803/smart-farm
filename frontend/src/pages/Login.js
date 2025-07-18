@@ -28,7 +28,7 @@ const handleLogin = async (e) => {
       const message =
         typeof data.error === "string"
           ? data.error
-          : data.error?.msg || data.error?.message || "Đăng nhập thất bại";
+          : data.error?.msg || data.error?.message || "Login failed";
 
       setError(message);
     } else {
@@ -37,7 +37,7 @@ const handleLogin = async (e) => {
       navigate("/monitor");
     }
   } catch (err) {
-    setError("Lỗi kết nối đến máy chủ.");
+    setError("Error connecting to server.");
   }
 
   setLoading(false);

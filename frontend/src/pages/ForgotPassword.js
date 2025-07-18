@@ -24,12 +24,12 @@ const ForgotPasswordPage = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        setStatus(`❌ ${data.error || "Yêu cầu thất bại"}`);
+        setStatus(`❌ ${data.error || "Request failed"}`);
       } else {
-        setStatus("✅ Vui lòng kiểm tra email để đặt lại mật khẩu.");
+        setStatus("✅ Please check your email to reset your password.");
       }
     } catch (err) {
-      setStatus("❌ Lỗi kết nối đến máy chủ.");
+      setStatus("❌ Error connecting to server.");
     }
 
     setLoading(false);
