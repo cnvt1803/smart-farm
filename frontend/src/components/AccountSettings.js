@@ -40,7 +40,7 @@ const AccountSettings = () => {
     try {
       const token = localStorage.getItem("access_token");
       if (!token) return;
-      const res = await fetch("/api/update-profile", {
+      const res = await fetch(`${API_BASE_URL}/api/update-profile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ const AccountSettings = () => {
       return;
     }
     try {
-      const res = await fetch("/api/forgot-password", {
+      const res = await fetch(`${API_BASE_URL}/api/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
