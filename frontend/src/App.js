@@ -28,6 +28,33 @@ function App() {
             </MainLayout>
           }
         />
+        <Route
+          path="/dashboard"
+          element={
+            <MainLayout activeItem="dashboard">
+              <h1>Dashboard</h1>
+              <p>This is the dashboard page.</p>
+            </MainLayout>
+          }
+        />
+        <Route 
+          path="/dashboard/operating-status"
+          element={
+            <MainLayout activeItem="operating_status">
+              <h1>Operating Status</h1>
+              <p>This is the operating status page.</p>
+            </MainLayout>
+          }
+        />
+        <Route 
+          path="/dashboard/sensor-management"
+          element={
+            <MainLayout activeItem="sensor_management">
+              <h1>Sensor Management</h1>
+              <p>This is the sensor management page.</p>
+            </MainLayout>
+          }
+        />
       </Routes>
     </Router>
   );

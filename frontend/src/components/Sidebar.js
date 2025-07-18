@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 const Sidebar = ({ activeItem }) => {
 
   const menuGroups = [
@@ -7,9 +7,22 @@ const Sidebar = ({ activeItem }) => {
       items: [
         { label: "Monitor", path: "/monitor", key: "monitor" },
         { label: "Pump Control", path: "/pump-control", key: "pump_control" },
+        { label: "Dashboard", path: "/dashboard", key: "dashboard", subItems: [
+          { label: "Operating status", path: "/dashboard/operating-status", key: "operating_status" },
+          { label: "Sensor management", path: "/dashboard/sensor-management", key: "sensor_management" },
+        ]},
       ],
     },
   ];
+
+  const [expandedItems, setExpandedItems] = useState({});
+
+  const toggleExpanded = (key) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
 
   return (
@@ -27,15 +40,51 @@ const Sidebar = ({ activeItem }) => {
           <ul className="space-y-2">
             {group.items.map((item) => (
               <li key={item.key}>
-                <a
-                  href={item.path}
-                  className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200
-                    ${activeItem === item.key ? "bg-blue-400 text-white font-bold" : "text-gray-800 hover:bg-blue-100"}
-                    ${item.isMain ? "text-base font-bold" : ""}
-                  `}
-                >
-                  <span>{item.label}</span>
-                </a>
+                { item.subItems ? (
+                  <div className="">
+                    <div 
+                      onClick={() => toggleExpanded(item.key)}
+                      className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200
+                        ${activeItem === item.key ? "bg-blue-400 text-white font-bold" : "text-gray-800 hover:bg-blue-100"}
+                      `}
+                    >
+                      <span>{item.label}</span>
+                      <svg 
+                        className={`w-4 h-4 transition-transform duration-200 ${expandedItems[item.key] ? 'rotate-180' : ''}`}
+                        fill="currentColor" 
+                        viewBox="0 0 20 20"
+                      >
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    {expandedItems[item.key] && (
+                      <ul className="pl-4 mt-2 space-y-1">
+                        {item.subItems.map((subItem) => (
+                          <li key={subItem.key}>
+                            <a
+                              href={subItem.path}
+                              className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                                ${activeItem === subItem.key ? "bg-blue-400 text-white font-bold" : "text-gray-800 hover:bg-blue-100"}
+                              `}
+                            >
+                              {subItem.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ) : (
+                  <a
+                    href={item.path}
+                    className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200
+                      ${activeItem === item.key ? "bg-blue-400 text-white font-bold" : "text-gray-800 hover:bg-blue-100"}
+                      ${item.isMain ? "text-base font-bold" : ""}
+                    `}
+                  >
+                    <span>{item.label}</span>
+                  </a>
+                )}
               </li>
             ))}
           </ul>
