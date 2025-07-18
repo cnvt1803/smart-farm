@@ -205,7 +205,8 @@ async def forgot_password(request: Request):
             "Content-Type": "application/json"
         }
         payload = {
-            "email": email
+            "email": email,
+            "redirectTo": "https://recover-password-de6c8.web.app/public/index.html"
         }
 
         response = requests.post(url, json=payload, headers=headers)
@@ -213,6 +214,7 @@ async def forgot_password(request: Request):
         if response.status_code == 200:
             return JSONResponse({"message": "📩 Email khôi phục mật khẩu đã được gửi."})
         else:
+            # Trả về lỗi chi tiết từ Supabase
             return JSONResponse({"error": response.json()}, status_code=response.status_code)
 
     except Exception as e:
@@ -352,6 +354,29 @@ async def update_profile(request: Request, authorization: str = Header(None)):
     except Exception as e:
         print("❌ Lỗi cập nhật profile:", e)
         return JSONResponse({"error": "Lỗi server"}, status_code=500)
+
+
+@app.post("/api/create-profile")
+async def create_profile(request: Request):
+    try:
+        body = await request.json()
+        insert_data = {
+            "user_id": body["user_id"],
+            "full_name": body["full_name"],
+            "email": body["email"],
+            "address": body.get("address", ""),
+            "province": body.get("province", ""),
+            "phone_number": body.get("phone_number", ""),
+            "role": "user"
+        }
+
+        result = supabase.table("user_profiles").insert(insert_data).execute()
+
+        return JSONResponse({"message": "User profile created successfully."})
+
+    except Exception as e:
+        print("❌ Error creating profile:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
 
 
 if __name__ == '__main__':
