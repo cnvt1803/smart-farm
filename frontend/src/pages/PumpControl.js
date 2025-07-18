@@ -89,7 +89,7 @@ const ControlPump = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-white min-h-screen p-10">
+    <div className="bg-gradient-to-br from-blue-50  to-white min-h-screen ">
       <h2 className="text-3xl font-bold text-blue-800 mb-6">🚰 Smart Pump Control</h2>
 
       <div className="bg-white rounded-2xl shadow-xl p-6 space-y-6">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/footer.png";
-import { API_BASE_URL } from "../config"; // ví dụ: http://localhost:8000
+import { API_BASE_URL } from "../config"; 
 
 const LoginPage = () => {
   const navigate = useNavigate();
