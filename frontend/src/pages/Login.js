@@ -104,6 +104,12 @@ const handleLogin = async (e) => {
         >
           Back to home page
         </button>
+        <button
+            onClick={() => navigate("/register")}
+            className="block mx-auto m-2 mb-4 text-blue-500 hover:underline"
+          >
+            Don't have an account? Register now
+          </button>
       </div>
     </div>
   );

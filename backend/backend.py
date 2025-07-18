@@ -206,7 +206,7 @@ async def forgot_password(request: Request):
         }
         payload = {
             "email": email,
-            "redirectTo": "https://recover-password-de6c8.web.app/public/index.html"
+            # "redirectTo": "https://recover-password-de6c8.web.app/public/index.html"
         }
 
         response = requests.post(url, json=payload, headers=headers)

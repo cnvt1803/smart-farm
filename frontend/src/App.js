@@ -5,6 +5,7 @@ import OverviewPage from "./pages/Monitor";
 import ControlPump from "./pages/PumpControl";
 import RegisterPage from "./pages/Register"
 import MainLayout from "./components/MainLayout";
+import ForgotPasswordPage from "./pages/ForgotPassword"
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         <Route
           path="/monitor"

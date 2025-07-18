@@ -48,7 +48,7 @@ const RegisterPage = () => {
         if (error) {
         setStatus("❌ " + error.message);
         } else {
-        setStatus("✅ Registration successful! Check your email for confirmation.");
+        setStatus("✅ Registration successful!");
 
         // 👇 Thêm vào bảng user_profiles
         const res = await fetch(`${API_BASE_URL}/api/create-profile`, {
