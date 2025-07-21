@@ -108,6 +108,11 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def root():
+    return {"message": "✅ Server is running!"}
+
+
 @app.post("/api/pump-on")
 def pump_on(payload: PumpCommand):
     if payload.command != "PUMP_ON":
