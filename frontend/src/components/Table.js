@@ -17,7 +17,7 @@ const Table = ({ columns, data, colspan, dataFormat }) => {
               {columns.map((col) => {
                 return (  
                   <td key={rowIndex + col.header} className="py-4 text-center" colSpan={colspan[col.header]}>
-                    {dataFormat(col.value, row[col.value])}
+                    {dataFormat(col.value, row[col.value], rowIndex, row)}
                   </td>
                 )
               })}

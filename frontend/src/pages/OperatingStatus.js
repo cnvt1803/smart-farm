@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_BASE_URL } from '../config'; 
+
 import SearchInput from '../components/SearchInput';
 import FilterSection from '../components/FilterSection';
 import Table from '../components/Table';
