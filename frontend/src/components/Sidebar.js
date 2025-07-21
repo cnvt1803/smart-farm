@@ -6,11 +6,11 @@ const Sidebar = ({ activeItem }) => {
       title: "MENU",
       items: [
         { label: "Monitor", path: "/monitor", key: "monitor" },
-        { label: "Pump Control", path: "/pump-control", key: "pump_control" },
-        { label: "Dashboard", path: "/dashboard", key: "dashboard", subItems: [
+        { label: "Devices", path: "/dashboard", key: "dashboard", subItems: [
           { label: "Operating status", path: "/dashboard/operating-status", key: "operating_status" },
           { label: "Sensor management", path: "/dashboard/sensor-management", key: "sensor_management" },
         ]},
+        { label: "Pump Control", path: "/pump-control", key: "pump_control" },
       ],
     },
   ];
