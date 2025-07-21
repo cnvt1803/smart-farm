@@ -5,6 +5,8 @@ import OverviewPage from "./pages/Monitor";
 import ControlPump from "./pages/PumpControl";
 import RegisterPage from "./pages/Register"
 import MainLayout from "./components/MainLayout";
+import OperatingStatus from "./pages/OperatingStatus";
+import SensorManagement from "./pages/SensorManagement";
 import ForgotPasswordPage from "./pages/ForgotPassword"
 
 function App() {
@@ -29,6 +31,22 @@ function App() {
           element={
             <MainLayout activeItem="pump_control">
               <ControlPump />
+            </MainLayout>
+          }
+        />
+        <Route 
+          path="/dashboard/operating-status"
+          element={
+            <MainLayout activeItem="operating_status">
+              <OperatingStatus />
+            </MainLayout>
+          }
+        />
+        <Route 
+          path="/dashboard/sensor-management"
+          element={
+            <MainLayout activeItem="sensor_management">
+              <SensorManagement />
             </MainLayout>
           }
         />
