@@ -41,13 +41,13 @@ const operationalStatusData = {
 }
 
 const filterName = {
-  "Tình trạng kết nối": [
+  "Connectivity": [
     { title: "Online", name: "online", id: "connected" },
     { title: "Offline", name: "offline", id: "disconnected" }
   ],
-  "Trạng thái": [
-    { title: "Bình thường", name: "normal", id: "normalStatus" },
-    { title: "Lỗi", name: "error", id: "errorStatus" }
+  "Status": [
+    { title: "Normal", name: "normal", id: "normalStatus" },
+    { title: "Error", name: "error", id: "errorStatus" }
   ]
 }
 
@@ -80,12 +80,15 @@ const OperatingStatus = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilter(prev => ({ ...prev, [name]: value }));
+    // Map filter name to field name
+    const fieldName = name === "Connectivity" ? "connectivity" : 
+                     name === "Status" ? "status" : name;
+    setFilter(prev => ({ ...prev, [fieldName]: value }));
     setCurrentPage(1); // Reset to first page when filter changes
   }
 
   const compareFilterValue = (item) => {
-    return item === "Tình trạng kết nối" ? "connectivity" : "status";
+    return item === "Connectivity" ? "connectivity" : "status";
   }
 
   const dataFormat = (title, value) => {
@@ -158,7 +161,7 @@ const OperatingStatus = () => {
       </div>
       <div className='flex flex-col gap-4 min-h-screen py-3 px-4'>
         <div className="flex items-center justify-center">
-          <h1 className="text-3xl font-bold text-center">TÌNH TRẠNG HOẠT ĐỘNG</h1>
+          <h1 className="text-3xl font-bold text-center">OPERATING STATUS</h1>
         </div>
         
         <div className="flex flex-row justify-center items-center gap-4">

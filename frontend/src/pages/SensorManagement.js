@@ -55,10 +55,21 @@ const sensorData = {
   ]
 }
 
-const filterName = {
-  "Vị trí": [
-    { value: "Tất cả", label: "Tất cả" },
+const getUniqueLocations = () => {
+  const uniqueLocations = [...new Set(sensorData.data.map(item => item.location))];
+
+  return [
+    { title: "All", name: "all", id: "all" }, // Empty string for "All" option
+    ...uniqueLocations.sort().map(location => ({
+      title: location,
+      name: location.toLowerCase().replace(/\s+/g, ''),
+      id: location // Use actual location name as id
+    }))
   ]
+}
+
+const filterName = {
+  "Location": getUniqueLocations()
 }
 
 const SensorManagement = () => {
@@ -114,12 +125,13 @@ const SensorManagement = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilter(prev => ({ ...prev, [name]: value }));
+    const fieldName = name === "Location" ? "location" : name.toLowerCase();
+    setFilter(prev => ({ ...prev, [fieldName]: value }));
     setCurrentPage(1); // Reset to first page when filter changes
   }
 
   const compareFilterValue = (item) => {
-    return "location";
+    return item === "Location" ? "location" : "location";
   }
 
   const dataFormat = (title, value, index, rowData) => {
@@ -210,9 +222,9 @@ const SensorManagement = () => {
     }
 
     // Apply location filter
-    if (filter.location && filter.location !== "Tất cả") {
+    if (filter.location && filter.location !== "") {
       filteredData = filteredData.filter(item => 
-        item.location.toLowerCase().includes(filter.location.toLowerCase())
+        item.location === filter.location
       );
     }
 
@@ -238,7 +250,7 @@ const SensorManagement = () => {
         
         <div className='flex flex-col gap-4 min-h-screen py-3 px-4'>
           <div className="flex items-center justify-center">
-            <h1 className="text-3xl font-bold text-center">QUẢN LÝ THIẾT BỊ</h1>
+            <h1 className="text-3xl font-bold text-center">SENSORS MANAGEMENT</h1>
           </div>
           
           <div className="flex flex-row justify-center items-center gap-4">
@@ -246,7 +258,7 @@ const SensorManagement = () => {
             <div className="">
               <button className="flex flex-row items-center text-white border-2 border-blue-600 rounded-md py-3 px-4 bg-blue-500 hover:bg-blue-600" onClick={() => openModal('add')}>
                   <FaPlus className="inline-block mr-1" />
-                  Thêm thiết bị
+                  Add new device
               </button>
             </div>
           </div>

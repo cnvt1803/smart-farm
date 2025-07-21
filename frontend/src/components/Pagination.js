@@ -11,7 +11,7 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
         disabled={currentPage === 1}
         className="py-2 px-4 font-semibold bg-white border-2 border-white rounded-sm transition-colors duration-300 ease-in-out cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Trước
+        Prev
       </button>
       {pages.map(page => (
         <button
@@ -27,7 +27,7 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
         disabled={currentPage === totalPages}
         className={`py-2 px-4 font-semibold bg-white border-2 border-white rounded-sm transition-colors duration-300 ease-in-out cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60`}
       >
-        Sau
+        Next
       </button>
     </nav>
   );
