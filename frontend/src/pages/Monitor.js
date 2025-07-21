@@ -2,9 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import image from "../assets/farm.webp";
-
+import axios from "axios";
 const Monitor = () => {
   const navigate = useNavigate();
+  const [province, setProvince] = useState("");
+  const [pTemperature, setpTemperature] = useState(null);
+  const [condition, setCondition] = useState(""); 
+  const [iconUrl, setIconUrl] = useState("");
+  const [windKph, setWindKph] = useState(null);
 
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
@@ -40,6 +45,46 @@ const Monitor = () => {
   }, [navigate]);
 
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+        const res = await fetch(`${API_BASE_URL}/api/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok && data) {
+          setProvince(data.province || "");
+        }
+      } catch (err) {
+        console.error("Error loading user information:", err);
+      } finally {
+       
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (!province) return;
+
+    const fetchWeather = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/weather`, {
+          params: { city: `${province}, Viet Nam` },
+        });
+        setpTemperature(res.data.temp_c);
+        setCondition(res.data.condition);
+        setIconUrl("https:" + res.data.icon); 
+        setWindKph(res.data.wind_kph);
+      } catch (err) {
+        console.error("Failed to fetch weather", err);
+      }
+    };
+
+    fetchWeather();
+  }, [province]);
+  useEffect(() => {
     const fetchSensorData = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/latest`);
@@ -69,15 +114,18 @@ const Monitor = () => {
         <div className="ml-16 flex flex-col gap-2">
           <h2 className="text-3xl font-bold text-blue-700">Hello 👋</h2>
           <p className="text-gray-700">Always be meticulous when taking care of your smart garden.</p>
-
           <div className="mt-2 space-y-1">
             <div className="flex items-center gap-2 text-blue-800 text-lg">
-              <span>🌡️</span>
-              <span>{temperature}°C Outdoor Temperature</span>
+              {iconUrl && <img src={iconUrl} alt="Weather icon" className="w-6 h-6" />}
+              <span>
+                {condition || "Loading weather..."} | Wind: {windKph !== null ? `${windKph} km/h` : "--"}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-blue-800 text-lg">
-              <span>☁️</span>
-              <span>Fuzzy cloudy weather</span>
+              <span>🌡️</span>
+              <span>
+                {temperature !== null ? `${pTemperature}°C` : "--"} Outdoor Temperature
+              </span>
             </div>
           </div>
         </div>
