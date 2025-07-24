@@ -8,7 +8,7 @@ import MainLayout from "./components/MainLayout";
 import OperatingStatus from "./pages/OperatingStatus";
 import SensorManagement from "./pages/SensorManagement";
 import ForgotPasswordPage from "./pages/ForgotPassword"
-
+import NMonitor from "./pages/newmonitor"
 function App() {
   return (
     <Router>
@@ -23,6 +23,14 @@ function App() {
           element={
             <MainLayout activeItem="monitor">
               <OverviewPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/demo"
+          element={
+            <MainLayout activeItem="monitor">
+              <NMonitor />
             </MainLayout>
           }
         />

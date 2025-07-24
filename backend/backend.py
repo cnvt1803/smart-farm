@@ -284,6 +284,43 @@ async def get_weather(city: str = Query(..., example="Hanoi")):
         return JSONResponse({"error": str(e)}, status_code=500)
 
 
+@app.get("/api/weather/forecast")
+async def get_weather_forecast(city: str = Query(..., example="Hanoi")):
+    url = "http://api.weatherapi.com/v1/forecast.json"
+    params = {
+        "key": WEATHER_API_KEY,
+        "q": city,
+        "days": 3,
+        "aqi": "no"
+    }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url, params=params)
+            resp.raise_for_status()
+            data = resp.json()
+
+        forecast = [
+            {
+                "date": item["date"],
+                "avg_temp_c": item["day"]["avgtemp_c"],
+                "condition": item["day"]["condition"]["text"],
+                "icon": item["day"]["condition"]["icon"]
+            }
+            for item in data["forecast"]["forecastday"]
+        ]
+
+        return {
+            "city": data["location"]["name"],
+            "city_slug": remove_accents(data["location"]["name"]).lower().replace(" ", "-"),
+            "country": data["location"]["country"],
+            "forecast": forecast
+        }
+
+    except httpx.HTTPError as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
 def decode_token(token: str):
     try:
         payload = jwt.decode(

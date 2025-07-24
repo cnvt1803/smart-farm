@@ -18,6 +18,7 @@
     "ip": "^2.0.1",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
+    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.3.0",
     "react-scripts": "5.0.1",
