@@ -290,7 +290,7 @@ async def get_weather_forecast(city: str = Query(..., example="Hanoi")):
     params = {
         "key": WEATHER_API_KEY,
         "q": city,
-        "days": 3,
+        "days": 4,
         "aqi": "no"
     }
 
