@@ -250,8 +250,16 @@ def remove_accents(input_str: str) -> str:
     return re.sub(r'\s+', ' ', no_accent).strip()
 
 
+def normalize_city(city: str) -> str:
+    city = remove_accents(city)
+    city = re.sub(r"\s+", " ", city).strip()
+    return city.title()  # e.g., "ha noi" → "Ha Noi"
+
+
 @app.get("/api/weather")
-async def get_weather(city: str = Query(..., example="Hanoi")):
+async def get_weather(city: str = Query(..., example="Hà Nội")):
+    city = normalize_city(city)
+
     url = "http://api.weatherapi.com/v1/current.json"
     params = {
         "key": WEATHER_API_KEY,
@@ -265,27 +273,32 @@ async def get_weather(city: str = Query(..., example="Hanoi")):
             resp.raise_for_status()
             data = resp.json()
 
-            city_name = data["location"]["name"]
-            city_slug = remove_accents(city_name).lower().replace(" ", "-")
+        if "error" in data:
+            return JSONResponse(status_code=404, content={"error": data["error"]["message"]})
 
-            return {
-                "city": city_name,
-                "city_slug": city_slug,
-                "country": data["location"]["country"],
-                "localtime": data["location"]["localtime"],
-                "temp_c": data["current"]["temp_c"],
-                "condition": data["current"]["condition"]["text"],
-                "icon": data["current"]["condition"]["icon"],
-                "humidity": data["current"]["humidity"],
-                "wind_kph": data["current"]["wind_kph"]
-            }
+        city_name = data["location"]["name"]
+        city_slug = remove_accents(city_name).lower().replace(" ", "-")
+
+        return {
+            "city": city_name,
+            "city_slug": city_slug,
+            "country": data["location"]["country"],
+            "localtime": data["location"]["localtime"],
+            "temp_c": data["current"]["temp_c"],
+            "condition": data["current"]["condition"]["text"],
+            "icon": data["current"]["condition"]["icon"],
+            "humidity": data["current"]["humidity"],
+            "wind_kph": data["current"]["wind_kph"]
+        }
 
     except httpx.HTTPError as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 @app.get("/api/weather/forecast")
-async def get_weather_forecast(city: str = Query(..., example="Hanoi")):
+async def get_weather_forecast(city: str = Query(..., example="Hà Nội")):
+    city = normalize_city(city)
+
     url = "http://api.weatherapi.com/v1/forecast.json"
     params = {
         "key": WEATHER_API_KEY,
@@ -299,6 +312,9 @@ async def get_weather_forecast(city: str = Query(..., example="Hanoi")):
             resp = await client.get(url, params=params)
             resp.raise_for_status()
             data = resp.json()
+
+        if "error" in data:
+            return JSONResponse(status_code=404, content={"error": data["error"]["message"]})
 
         forecast = [
             {

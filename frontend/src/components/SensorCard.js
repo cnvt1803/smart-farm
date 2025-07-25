@@ -1,53 +1,60 @@
-import React from 'react';
+import { FaThermometerHalf, FaTint, FaSun, FaLeaf, FaEye } from "react-icons/fa";
 
-const SensorCard = ({ icon, label, value, unit, rawValue = 0, color }) => {
-  const percentage = Math.min(Math.max((rawValue / 100) * 100, 0), 100);
+const iconMap = {
+  Temperature: <FaThermometerHalf className="text-3xl" />,
+  Humidity: <FaTint className="text-3xl" />,
+  Lux: <FaSun className="text-3xl" />,
+  Soil: <FaLeaf className="text-3xl" />,
+  Rain: <FaEye className="text-3xl" />,
+};
 
-  const radius = 60;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference * (1 - percentage / 100);
+const getProgressPercent = (label, value) => {
+  if (value === undefined || value === null) return 0;
+  switch (label) {
+    case "Temperature":
+      return Math.min(Math.max(((value - 0) / 50) * 100, 0), 100); // 0 - 50°C
+    case "Humidity":
+    case "Soil":
+      return Math.min(Math.max(value, 0), 100); // 0 - 100%
+    case "Lux":
+      return Math.min(Math.max((value / 20), 0), 100); // e.g., 0 - 2000 lux → 0 - 100
+    case "Rain":
+      return Math.min(Math.max((value / 100), 0), 100); // tùy thang đo
+    default:
+      return 0;
+  }
+};
+
+export default function SensorCard({ label, value, unit, color = "#10b981", rawValue }) {
+  const percent = getProgressPercent(label, rawValue ?? value);
 
   return (
-    <div className="bg-blue-50 rounded-2xl shadow-md p-6 w-[240px] text-center">
-      <div className="text-3xl mb-1">{icon}</div>
-      <div className="text-lg font-semibold text-gray-800 mb-3">{label}</div>
-      <div className="relative w-[140px] h-[140px] mx-auto">
-        {/* Nền vòng tròn */}
-        <svg className="absolute top-0 left-0 transform rotate-90" width="140" height="140">
-          <circle
-            cx="70"
-            cy="70"
-            r={radius}
-            stroke="#e5e7eb"
-            strokeWidth="12"
-            fill="none"
-          />
-        </svg>
+    <div className="bg-white rounded-2xl shadow-md p-4 flex flex-col items-start justify-between gap-3 min-h-[130px] transition-transform duration-200 hover:scale-[1.02]">
 
-        {/* Phần trăm vòng tròn */}
-        <svg className="absolute top-0 left-0 transform rotate-90" width="140" height="140">
-          <circle
-            cx="70"
-            cy="70"
-            r={radius}
-            stroke={color}
-            strokeWidth="12"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            fill="none"
-          />
-        </svg>
-
-        {/* Giá trị ở giữa */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold" style={{ color }}>
-            {value} {unit}
-          </span>
+      {/* Icon + Label */}
+      <div className="flex items-center gap-3">
+        <div
+          className="p-2 rounded-full text-white"
+          style={{ backgroundColor: color }}
+        >
+          {iconMap[label] || <FaEye className="text-2xl" />}
         </div>
+        <div className="text-gray-700 font-semibold text-lg">{label}</div>
+      </div>
+
+      {/* Value */}
+      <div className="text-3xl font-bold text-gray-900">
+        {value !== undefined && value !== null ? value : "--"}
+        <span className="text-lg font-medium ml-1">{unit}</span>
+      </div>
+
+      {/* Progress bar */}
+      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className="h-full rounded-full"
+          style={{ width: `${percent}%`, backgroundColor: color }}
+        />
       </div>
     </div>
   );
-};
-
-export default SensorCard;
+}
