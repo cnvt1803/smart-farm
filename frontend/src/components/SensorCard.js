@@ -17,9 +17,9 @@ const getProgressPercent = (label, value) => {
     case "Soil":
       return Math.min(Math.max(value, 0), 100); // 0 - 100%
     case "Lux":
-      return Math.min(Math.max((value / 20), 0), 100); // e.g., 0 - 2000 lux → 0 - 100
+      return Math.min(Math.max((value / 30), 0), 100); // e.g., 0 - 3000 lux → 0 - 100
     case "Rain":
-      return Math.min(Math.max((value / 100), 0), 100); // tùy thang đo
+      return Math.min(Math.max((value / 100), 0), 100);
     default:
       return 0;
   }
