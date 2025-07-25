@@ -32,13 +32,13 @@ const sampleData = {
     { day: "Sun", value: 77 },
   ],
   Rainfall: [
-    { day: "Mon", value: 500 },
+    { day: "Mon", value: 1200 },
     { day: "Tue", value: 560 },
-    { day: "Wed", value: 550 },
-    { day: "Thu", value: 660 },
-    { day: "Fri", value: 707 },
+    { day: "Wed", value: 2550 },
+    { day: "Thu", value: 3660 },
+    { day: "Fri", value: 3207 },
     { day: "Sat", value: 800 },
-    { day: "Sun", value: 300 },
+    { day: "Sun", value: 3300 },
   ],
   Lux: [
     { day: "Mon", value: 2000 },
