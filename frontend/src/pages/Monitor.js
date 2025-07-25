@@ -108,13 +108,6 @@ const Monitor = () => {
 
     return (
         <div className="p-6 bg-[#F7FAFC] min-h-screen">
-            {/* Header */}
-            <div className="mb-6 flex justify-between items-center">
-                <div>
-                    <h2 className="text-3xl font-bold text-gray-800">Smart Farm Dashboard</h2>
-                    <p className="text-sm text-gray-500">Monitor your plants and environment.</p>
-                </div>
-            </div>
             <div className="flex gap-6">
                 {/* Cột trái */}
                 <div className="w-2/3 space-y-6 pr-4">
