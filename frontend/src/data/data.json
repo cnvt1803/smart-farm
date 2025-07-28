@@ -1,0 +1,241 @@
+{
+  "sensors": [
+    {
+      "deviceID": "sensor1",
+      "userID": "user1",
+      "locationID": "location1",
+      "deviceName": "Temperature Sensor",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor2",
+      "userID": "user2",
+      "locationID": "location2",
+      "deviceName": "Humidity Sensor",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },
+    {
+      "deviceID": "sensor3",
+      "userID": "user1",
+      "locationID": "location3",
+      "deviceName": "Soil Moisture Sensor",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor4",
+      "userID": "user3",
+      "locationID": "location1",
+      "deviceName": "Light Sensor",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor5",
+      "userID": "user2",
+      "locationID": "location2",
+      "deviceName": "Pressure Sensor",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },
+    {
+      "deviceID": "sensor6",
+      "userID": "user3",
+      "locationID": "location3",
+      "deviceName": "Wind Speed Sensor",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor7",
+      "userID": "user1",
+      "locationID": "location2",
+      "deviceName": "Rainfall Sensor",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor8",
+      "userID": "user2",
+      "locationID": "location3",
+      "deviceName": "pH Sensor",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },
+    {
+      "deviceID": "sensor9",
+      "userID": "user3",
+      "locationID": "location1",
+      "deviceName": "EC Sensor",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor10",
+      "userID": "user1",
+      "locationID": "location2",
+      "deviceName": "Nutrient Sensor",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },  
+    {
+      "deviceID": "sensor11",
+      "userID": "user2",
+      "locationID": "location3",
+      "deviceName": "Temperature Sensor 2",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor12",
+      "userID": "user3",
+      "locationID": "location1",
+      "deviceName": "Humidity Sensor 2",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },
+    {
+      "deviceID": "sensor13",
+      "userID": "user1",
+      "locationID": "location2",
+      "deviceName": "Soil Moisture Sensor 2",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor14",
+      "userID": "user2",
+      "locationID": "location3",
+      "deviceName": "Light Sensor 2",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor15",
+      "userID": "user3",
+      "locationID": "location1",
+      "deviceName": "Pressure Sensor 2",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },
+    {
+      "deviceID": "sensor16",
+      "userID": "user1",
+      "locationID": "location2",
+      "deviceName": "Wind Speed Sensor 2",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor17",
+      "userID": "user2",
+      "locationID": "location3",
+      "deviceName": "Rainfall Sensor 2",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor18",
+      "userID": "user3",
+      "locationID": "location1",
+      "deviceName": "pH Sensor 2",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    },
+    {
+      "deviceID": "sensor19",
+      "userID": "user1",
+      "locationID": "location2",
+      "deviceName": "EC Sensor 2",
+      "connectivity": "Online",
+      "status": "Active"
+    },
+    {
+      "deviceID": "sensor20",
+      "userID": "user2",
+      "locationID": "location3",
+      "deviceName": "Nutrient Sensor 2",
+      "connectivity": "Offline",
+      "status": "Inactive"
+    }
+  ],  
+  "users": [
+    {
+      "userID": "user1",
+      "username": "john_doe",
+      "userAddress": "123 Main St, Springfield",
+      "userPhone": "1234567890"
+    }
+    ,
+    {
+      "userID": "user2",
+      "username": "jane_smith",
+      "userAddress": "456 Elm St, Springfield",
+      "userPhone": "0987654321"
+    },
+    {
+      "userID": "user3",
+      "username": "alice_jones",
+      "userAddress": "789 Oak St, Springfield",
+      "userPhone": "1122334455"
+    }
+  ],
+  "locations": [
+    {
+      "userID": "user1",
+      "locationID": "location1",
+      "locationName": "Greenhouse 1",
+      "locationAddress": "123 Greenhouse St, Springfield"
+    },
+    {
+      "userID": "user1",
+      "locationID": "location2",
+      "locationName": "Greenhouse 2",
+      "locationAddress": "456 Greenhouse St, Springfield"
+    },
+    {
+      "userID": "user1",
+      "locationID": "location3",
+      "locationName": "Greenhouse 3",
+      "locationAddress": "789 Greenhouse St, Springfield"
+    },
+    {
+      "userID": "user2",
+      "locationID": "location1",
+      "locationName": "RedHouse 1",
+      "locationAddress": "123 RedHouse St, Springfield"
+    },
+    {
+      "userID": "user2",
+      "locationID": "location2",
+      "locationName": "RedHouse 2",
+      "locationAddress": "456 RedHouse St, Springfield"
+    },
+    {
+      "userID": "user2",
+      "locationID": "location3",
+      "locationName": "RedHouse 3",
+      "locationAddress": "789 RedHouse St, Springfield"
+    },
+    {
+      "userID": "user3",
+      "locationID": "location1",
+      "locationName": "BlueHouse 1",
+      "locationAddress": "123 BlueHouse St, Springfield"
+    },
+    {
+      "userID": "user3",
+      "locationID": "location2",
+      "locationName": "BlueHouse 2",
+      "locationAddress": "456 BlueHouse St, Springfield"
+    },
+    {
+      "userID": "user3",
+      "locationID": "location3",
+      "locationName": "BlueHouse 3",
+      "locationAddress": "789 BlueHouse St, Springfield"
+    }
+  ]
+}

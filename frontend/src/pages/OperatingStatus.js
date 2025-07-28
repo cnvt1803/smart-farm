@@ -1,44 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_BASE_URL } from '../config'; 
+import data from '../data/data.json';
 
 import SearchInput from '../components/SearchInput';
 import FilterSection from '../components/FilterSection';
 import Table from '../components/Table';
 import Pagination from '../components/Pagination';
 
+const findLocationNameByLocationId = (locationId) => {
+  const location = data.locations.find(item => item.locationID === locationId);
+  return location.locationName || 'Unknown Location';
+}
+
 const operationalStatusData = {
   columns: [
-    { header: "Device ID", value: "deviceId", sorted: true},
-    { header: "User ID", value: "userId", sorted: true},
-    { header: "Device Name", value: "deviceName", sorted: true},
-    { header: "Location", value: "location", sorted: true},
-    { header: "Connectivity", value: "connectivity", sorted: true},
-    { header: "Status", value: "status", sorted: true}
-  ], 
-  data: [
-    { "deviceId": "device1", "userId": "123", "deviceName": "Sensor A", "location": "Greenhouse 1", "connectivity": "Online", "status": "Normal" },
-    { "deviceId": "device2", "userId": "124", "deviceName": "Sensor B", "location": "Greenhouse 2", "connectivity": "Offline", "status": "Error" },
-    { "deviceId": "device3", "userId": "125", "deviceName": "Sensor C", "location": "Greenhouse 3", "connectivity": "Online", "status": "Normal" },
-    { "deviceId": "device4", "userId": "126", "deviceName": "Sensor D", "location": "Greenhouse 4", "connectivity": "Offline", "status": "Error" },
-    { "deviceId": "device5", "userId": "127", "deviceName": "Sensor E", "location": "Greenhouse 5", "connectivity": "Online", "status": "Normal" },
-    { "deviceId": "device6", "userId": "128", "deviceName": "Sensor F", "location": "Greenhouse 6", "connectivity": "Offline", "status": "Error" },
-    { "deviceId": "device7", "userId": "129", "deviceName": "Sensor G", "location": "Greenhouse 7", "connectivity": "Online", "status": "Normal" },
-    { "deviceId": "device8", "userId": "130", "deviceName": "Sensor H", "location": "Greenhouse 8", "connectivity": "Offline", "status": "Error" },
-    { "deviceId": "device9", "userId": "131", "deviceName": "Sensor I", "location": "Greenhouse 9", "connectivity": "Online", "status": "Normal" },
-    { "deviceId": "device10", "userId": "132", "deviceName": "Sensor J", "location": "Greenhouse 10", "connectivity": "Offline", "status": "Error" },
-    { "deviceId": "device11", "userId": "133", "deviceName": "Sensor K", "location": "Greenhouse 11", "connectivity": "Online", "status": "Normal" },
-    { "deviceId": "device12", "userId": "134", "deviceName": "Sensor L", "location": "Greenhouse 12", "connectivity": "Offline", "status": "Error" }
+    { header: "Device Name", value: "deviceName" },
+    { header: "Device ID", value: "deviceID" },
+    { header: "Location", value: "location" },
+    { header: "Connectivity", value: "connectivity" },
+    { header: "Status", value: "status" }
   ],
-  colspan: [
-    { "deviceId": 1 },
-    { "userId": 1 },
-    { "deviceName": 1 },
-    { "location": 2 },
-    { "connectivity": 1 },
-    { "status": 1 }
-  ]
+  colspan: {
+    deviceName: 1,
+    deviceID: 1,
+    location: 1,
+    connectivity: 1,
+    status: 1, 
+  }
 }
+
+operationalStatusData.data = [];
+data.sensors.forEach((item) => {
+  operationalStatusData.data.push({
+    deviceName: item.deviceName,
+    deviceID: item.deviceID,
+    location: findLocationNameByLocationId(item.locationID),
+    connectivity: item.connectivity,
+    status: item.status
+  });
+});
 
 const filterName = {
   "Connectivity": [
