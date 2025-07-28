@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
+import data from '../../data/data.json';
 
 const AddForm = ({ onAddItem, onClose }) => {
   const [formData, setFormData] = useState({
     deviceId: '',
-    userId: '',
     deviceName: '',
-    location: ''
+    userId: '',
+    location: '',
   });
+
+  const userIdList = data.users.map(item => item.userID);
+  const getLocationList = (userID) => {
+    return data.locations.filter(location => location.userID === userID);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,46 +24,22 @@ const AddForm = ({ onAddItem, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.deviceId || !formData.deviceName || !formData.location) {
+    if (!formData.deviceName || !formData.userId || !formData.location) {
       alert('Vui lòng điền đầy đủ thông tin');
       return;
     }
     
+    // Generate unique deviceId if not provided
+    const newDeviceId = formData.deviceId || `device_${Date.now()}`;
     onAddItem({
       ...formData,
+      deviceId: newDeviceId,
       customActions: "true"
-    });
+    })
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Device ID
-        </label>
-        <input
-          type="text"
-          name="deviceId"
-          value={formData.deviceId}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          User ID
-        </label>
-        <input
-          type="text"
-          name="userId"
-          value={formData.userId}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Device Name
@@ -68,22 +50,53 @@ const AddForm = ({ onAddItem, onClose }) => {
           value={formData.deviceName}
           onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Nhập tên thiết bị"
           required
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          User ID
+        </label>
+        <select 
+          name="userId"
+          value={formData.userId}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        >
+          <option value="">Select user ID</option>
+          {userIdList.map(userID => (
+            <option key={userID} value={userID}>
+              {userID}
+            </option>
+          ))}
+        </select>
       </div>
       
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Location
         </label>
-        <input
-          type="text"
+        <select 
           name="location"
           value={formData.location}
           onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
-        />
+          disabled={!formData.userId}
+        >
+          <option value="">Select location</option>
+          {getLocationList(formData.userId).map(location => (
+            <option key={location.locationID} value={location.locationName}>
+              {location.locationName}
+            </option>
+          ))}
+        </select>
+        {!formData.userId && (
+          <p className="text-sm text-gray-500 mt-1">Vui lòng chọn User ID trước</p>
+        )}
       </div>
       
       <div className="flex justify-end gap-3 pt-4">

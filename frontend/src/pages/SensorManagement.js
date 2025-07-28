@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_BASE_URL } from '../config';
+import data from '../data/data.json';
 
 import SearchInput from '../components/SearchInput';
 import FilterSection from '../components/FilterSection'; 
@@ -16,43 +17,9 @@ import { FiEye } from 'react-icons/fi';
 import { TbEdit } from 'react-icons/tb';
 import { RiDeleteBin2Line } from 'react-icons/ri';
 
-const sensorData = {
-  columns: [
-    { header: "Device ID", value: "deviceId", sorted: true},
-    { header: "User ID", value: "userId", sorted: true},
-    { header: "Device Name", value: "deviceName", sorted: true},
-    { header: "Location", value: "location", sorted: true},
-    { header: "Custom Actions", value: "customActions", sorted: false}
-  ], 
-  data: [
-    { "deviceId": "device1", "userId": "123", "deviceName": "Sensor A", "location": "Greenhouse 1", "customActions": "true"},
-    { "deviceId": "device2", "userId": "456", "deviceName": "Sensor B", "location": "Greenhouse 2", "customActions": "true"},
-    { "deviceId": "device3", "userId": "789", "deviceName": "Sensor C", "location": "Greenhouse 3", "customActions": "true"},
-    { "deviceId": "device4", "userId": "101", "deviceName": "Sensor D", "location": "Greenhouse 4", "customActions": "true"},
-    { "deviceId": "device5", "userId": "112", "deviceName": "Sensor E", "location": "Greenhouse 5", "customActions": "true"},
-    { "deviceId": "device6", "userId": "113", "deviceName": "Sensor F", "location": "Greenhouse 6", "customActions": "true"},
-    { "deviceId": "device7", "userId": "114", "deviceName": "Sensor G", "location": "Greenhouse 7", "customActions": "true"},
-    { "deviceId": "device8", "userId": "115", "deviceName": "Sensor H", "location": "Greenhouse 8", "customActions": "true"},
-    { "deviceId": "device9", "userId": "116", "deviceName": "Sensor I", "location": "Greenhouse 9", "customActions": "true"},
-    { "deviceId": "device10", "userId": "117", "deviceName": "Sensor J", "location": "Greenhouse 10", "customActions": "true"},
-    { "deviceId": "device11", "userId": "118", "deviceName": "Sensor K", "location": "Greenhouse 11", "customActions": "true"},
-    { "deviceId": "device12", "userId": "119", "deviceName": "Sensor L", "location": "Greenhouse 12", "customActions": "true"},
-    { "deviceId": "device13", "userId": "120", "deviceName": "Sensor M", "location": "Greenhouse 13", "customActions": "true"},
-    { "deviceId": "device14", "userId": "121", "deviceName": "Sensor N", "location": "Greenhouse 14", "customActions": "true"},
-    { "deviceId": "device15", "userId": "122", "deviceName": "Sensor O", "location": "Greenhouse 15", "customActions": "true"},
-    { "deviceId": "device16", "userId": "123", "deviceName": "Sensor P", "location": "Greenhouse 16", "customActions": "true"},
-    { "deviceId": "device17", "userId": "124", "deviceName": "Sensor Q", "location": "Greenhouse 17", "customActions": "true"},
-    { "deviceId": "device18", "userId": "125", "deviceName": "Sensor R", "location": "Greenhouse 18", "customActions": "true"},
-    { "deviceId": "device19", "userId": "126", "deviceName": "Sensor S", "location": "Greenhouse 19", "customActions": "true"},
-    { "deviceId": "device20", "userId": "127", "deviceName": "Sensor T", "location": "Greenhouse 20", "customActions": "true"},
-  ],
-  colspan: [
-    { "deviceId": 1 },
-    { "userId": 1 },
-    { "deviceName": 1 },
-    { "location": 2 },
-    { "customActions": 5 },
-  ]
+const findLocationNameByLocationId = (locationId) => {
+  const location = data.locations.find(item => item.locationID === locationId);
+  return location.locationName || 'Unknown Location';
 }
 
 const getUniqueLocations = () => {
@@ -67,6 +34,34 @@ const getUniqueLocations = () => {
     }))
   ]
 }
+
+const sensorData = {
+  columns: [
+    { header: "Device ID", value: "deviceId" },
+    { header: "Device Name", value: "deviceName" },
+    { header: "User ID", value: "userId" },
+    { header: "Location", value: "location" },
+    { header: "Actions", value: "customActions" }
+  ],
+  colspan: {
+    deviceId: 1,
+    deviceName: 1,
+    userId: 1,
+    location: 1,
+    customActions: 1 // Adjusted to match the number of action buttons 
+  }
+};
+
+sensorData.data = [];
+data.sensors.forEach(sensorItem => {
+  sensorData.data.push({
+    deviceId: sensorItem.deviceID,
+    deviceName: sensorItem.deviceName,
+    userId: sensorItem.userID,
+    location: findLocationNameByLocationId(sensorItem.locationID),
+    customActions: "true"
+  });
+})
 
 const filterName = {
   "Location": getUniqueLocations()
@@ -176,13 +171,13 @@ const SensorManagement = () => {
     closeModal();
   }
 
-  const handleEditItem = (updatedItem) => {
+  const handleEditItem = (deviceID, updatedItem) => {
     console.log('handleEditItem called with:', updatedItem);
     setCurrentData(prevData => {
       const newData = {
         ...prevData,
         data: prevData.data.map(item => 
-          item.deviceId === updatedItem.deviceId ? updatedItem : item
+          item.deviceId === deviceID ? updatedItem : item
         )
       };
       console.log('Updated data:', newData);
@@ -240,6 +235,7 @@ const SensorManagement = () => {
   }
 
   const filteredData = getFilteredData();
+  console.log('Filtered data:', filteredData);
 
   return (
     <>
