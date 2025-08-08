@@ -5,9 +5,8 @@ import OverviewPage from "./pages/Monitor";
 import ControlPump from "./pages/PumpControl";
 import RegisterPage from "./pages/Register"
 import MainLayout from "./components/MainLayout";
-import OperatingStatus from "./pages/OperatingStatus";
-import SensorManagement from "./pages/SensorManagement";
 import ForgotPasswordPage from "./pages/ForgotPassword"
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -36,18 +35,10 @@ function App() {
           }
         />
         <Route 
-          path="/dashboard/operating-status"
+          path="/dashboard"
           element={
-            <MainLayout activeItem="operating_status">
-              <OperatingStatus />
-            </MainLayout>
-          }
-        />
-        <Route 
-          path="/dashboard/sensor-management"
-          element={
-            <MainLayout activeItem="sensor_management">
-              <SensorManagement />
+            <MainLayout activeItem="dashboard">
+              <Dashboard />
             </MainLayout>
           }
         />
