@@ -1,245 +1,256 @@
-// Modern Smart Garden Dashboard UI
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
-import illustration from "../assets/farm.webp";
 import SensorCard from "../components/SensorCard";
-import DataChart from "../components/DataChart"; 
+import DataChart from "../components/DataChart";
 import RainLevelChart from "../components/RainChart";
+import HarvestSchedule from "../components/right";
 
 const Monitor = () => {
-    const navigate = useNavigate();
-    const [name, setName] = useState("");
-    const [province, setProvince] = useState("");
-    const [pTemperature, setpTemperature] = useState(null);
-    const [condition, setCondition] = useState("");
-    const [iconUrl, setIconUrl] = useState("");
-    const [forecastList, setForecastList] = useState([]);
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [province, setProvince] = useState("");
+  const [pTemperature, setpTemperature] = useState(null);
+  const [condition, setCondition] = useState("");
+  const [iconUrl, setIconUrl] = useState("");
+  const [windKph, setWindKph] = useState(null);
+  const [forecastList, setForecastList] = useState([]);
 
-    const [temperature, setTemperature] = useState(null);
-    const [humidity, setHumidity] = useState(null);
-    const [soilPercent, setSoilPercent] = useState(null);
-    const [lux, setLux] = useState(null);
-    const [rainValue, setRainValue] = useState(null);
+  const [temperature, setTemperature] = useState(null);
+  const [humidity, setHumidity] = useState(null);
+  const [soilPercent, setSoilPercent] = useState(null);
+  const [lux, setLux] = useState(null);
+  const [rainValue, setRainValue] = useState(null);
 
-    useEffect(() => {
-        const checkLogin = async () => {
-            const token = localStorage.getItem("access_token");
-            if (!token) {
-                navigate("/login");
-                return;
-            }
-
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/check-auth`, {
-                headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (!res.ok) {
-                localStorage.removeItem("access_token");
-                navigate("/login");
-                }
-            } catch (err) {
-                console.error("Lỗi xác thực:", err);
-                navigate("/login");
-            }
-        };
-        checkLogin();
-    }, [navigate]);
-
-    useEffect(() => {
-        const fetchProfile = async () => {
-        const token = localStorage.getItem("access_token");
-        if (!token) return;
-        const res = await fetch(`${API_BASE_URL}/api/me`, {
-            headers: { Authorization: `Bearer ${token}` },
+  // Auth check
+  useEffect(() => {
+    const checkLogin = async () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/check-auth`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
-        if (res.ok){
-            setName(data.full_name || ""); 
-            setProvince(data.province || "");
-        } 
-        };
-        fetchProfile();
-    }, []);
+        if (!res.ok) {
+          localStorage.removeItem("access_token");
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Auth error:", err);
+        navigate("/login");
+      }
+    };
+    checkLogin();
+  }, [navigate]);
 
-    useEffect(() => {
-        if (!province) return;
-        axios
-        .get(`${API_BASE_URL}/api/weather`, {
-            params: { city: `${province}, Viet Nam` },
-        })
-        .then((res) => {
-            setpTemperature(res.data.temp_c);
-            setCondition(res.data.condition);
-            setIconUrl("https:" + res.data.icon);
-        })
-        .catch(console.error);
-    }, [province]);
+  // Fetch profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+      const res = await fetch(`${API_BASE_URL}/api/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setName(data.full_name || "");
+        setProvince(data.province || "");
+      }
+    };
+    fetchProfile();
+  }, []);
 
-    useEffect(() => {
-        if (!province) return;
-        axios
-            .get(`${API_BASE_URL}/api/weather/forecast`, {
-            params: { city: `${province}, Viet Nam` },
-            })
-            .then((res) => {
-            setForecastList(res.data.forecast); 
-            })
-            .catch(console.error);
-    }, [province]);
+  // Current weather
+  useEffect(() => {
+    if (!province) return;
+    axios
+      .get(`${API_BASE_URL}/api/weather`, {
+        params: { city: `${province}, Viet Nam` },
+      })
+      .then((res) => {
+        setpTemperature(res.data.temp_c);
+        setCondition(res.data.condition);
+        setIconUrl("https:" + res.data.icon);
+      })
+      .catch(console.error);
+  }, [province]);
 
+  // Forecast
+  useEffect(() => {
+    if (!province) return;
+    axios
+      .get(`${API_BASE_URL}/api/weather/forecast`, {
+        params: { city: `${province}, Viet Nam` },
+      })
+      .then((res) => {
+        setForecastList(res.data.forecast);
+      })
+      .catch(console.error);
+  }, [province]);
 
-    useEffect(() => {
-        const fetchSensor = async () => {
-        const res = await fetch(`${API_BASE_URL}/api/latest`);
-        const data = await res.json();
-        setTemperature(parseFloat(data.temperature));
-        setHumidity(parseFloat(data.humidity));
-        setSoilPercent(parseFloat(data.soilPercent) * 100);
-        setLux(parseFloat(data.lux));
-        setRainValue(parseFloat(data.rainValue));
-        };
-        fetchSensor();
-        const interval = setInterval(fetchSensor, 5000);
-        return () => clearInterval(interval);
-    }, []);
+  // Sensor data
+  useEffect(() => {
+    const fetchSensor = async () => {
+      const res = await fetch(`${API_BASE_URL}/api/latest`);
+      const data = await res.json();
+      setTemperature(parseFloat(data.temperature));
+      setHumidity(parseFloat(data.humidity));
+      setSoilPercent(parseFloat(data.soilPercent) * 100);
+      setLux(parseFloat(data.lux));
+      setRainValue(parseFloat(data.rainValue));
+      setWindKph(parseFloat(data.windKph));
 
-    return (
-        <div className="p-6 bg-[#F7FAFC] min-h-screen">
-            <div className="flex gap-6">
-                {/* Cột trái */}
-                <div className="w-2/3 space-y-6 pr-4">
-                    {/* Weather + Illustration */}
-                    <div className="bg-blue-50 rounded-2xl shadow-lg p-6 flex flex-col md:flex-row items-center gap-6">
-                        <div className="flex-1 space-y-2">
-                            <h3 className="text-xl font-semibold text-blue-700">Hello, {name} 👋 </h3>
-                            <p className="text-gray-600">Always be meticulous when taking care of your smart garden.</p>
-                           <div className="pt-3 mt-3 border-t border-gray-200 space-y-2">
-                                <div className="flex items-center gap-7 mb-3 text-gray-500 text-sm">
-                                    <span>📅 {new Date().toLocaleDateString()}</span>
-                                    <span>•</span>
-                                    <span>📍{province}</span>
-                                </div>
-                                <div className="flex gap-4 text-sm text-gray-700">
-                                    <span>🌱 Plants: 8</span>
-                                    <span>•</span>
-                                    <span>📡 Sensors: 5 active</span>
-                                </div>
-                            </div>
-                        </div>
-                        <img src={illustration} alt="Garden" className="w-64 h-auto rounded-xl" />
-                    </div>
-                    {/* Sensor Cards */}
-                    <div className="bg-gray-50 rounded-2xl shadow-md p-6 w-full">
-                        <h3 className="text-lg font-semibold text-gray-700">Sensor Data</h3>
-                        <div className="mt-4 px-2">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
-                                <SensorCard
-                                    label="Temperature"
-                                    value={temperature ?? "--"}
-                                    unit="°C"
-                                    rawValue={temperature}
-                                    color="#ef4444"
-                                />
-                                <SensorCard
-                                    label="Humidity"
-                                    value={humidity ?? "--"}
-                                    unit="%"
-                                    rawValue={humidity}
-                                    color="#3b82f6"
-                                />
-                                <SensorCard
-                                    label="Lux"
-                                    value={lux ?? "--"}
-                                    unit="lux"
-                                    rawValue={lux / 1000}
-                                    color="#a855f7"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="md:col-span-2">
-                        <DataChart />
-                    </div>
-                </div>
+    };
+    fetchSensor();
+    const interval = setInterval(fetchSensor, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-                {/* Đường kẻ giữa */}
-                <div className="w-px bg-gray-300 mx-2" />
-                
-                {/* Cột phải  */}
-                <div className="w-1/3 space-y-6 pl-4">
-                    <div className="bg-white rounded-2xlshadow-md p-6 w-full">
-                        {/* Current Weather */}
-                        <div className="mb-6">
-                            <div className="bg-gray-100 rounded-2xl mb-4 shadow-md p-6">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2 text-center">Current Weather</h3>
-                                <div className="flex flex-col items-center justify-center gap-2">
-                                    <div className="text-4xl font-bold text-blue-600">{pTemperature}°C</div>
-                                    <div className="flex items-center gap-2 text-gray-600 text-lg">
-                                        <span>{condition}</span>
-                                        {iconUrl && <img src={iconUrl} className="w-6 h-6" alt="weather" />}
-                                    </div>
-                                </div>
-                            </div>
-
-                           <ul className="divide-y divide-gray-200 rounded-xl overflow-hidden shadow-md border mb-4">
-                                {forecastList.map((item) => {
-                                    const date = new Date(item.date);
-                                    const formattedDate = date.toLocaleDateString("en-US", {
-                                    weekday: "short",
-                                    month: "short",
-                                    day: "numeric",
-                                    });
-
-                                    return (
-                                    <li
-                                        key={item.date}
-                                        className="flex items-center justify-between bg-white px-4 py-3 hover:bg-gray-50 transition-all"
-                                    >
-                                        {/* Left: Date */}
-                                        <div className="text-gray-600 text-sm font-medium w-1/3">{formattedDate}</div>
-
-                                        {/* Right: Icon + Temp + Condition */}
-                                        <div className="flex items-center gap-2 w-2/3 justify-end">
-                                        <img
-                                            src={`https:${item.icon}`}
-                                            alt={item.condition}
-                                            className="w-7 h-7 shrink-0"
-                                        />
-                                        <span className="text-gray-800 font-semibold w-[48px] text-right">
-                                            {Math.round(item.avg_temp_c)}°C
-                                        </span>
-                                        <span className="text-gray-500 text-sm hidden sm:inline w-[140px] truncate">
-                                            {item.condition}
-                                        </span>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                            </ul> 
-                        </div>
-
-                        {/* Soil Information */}
-                        <div className="border-t pt-4">
-                            <h3 className="text-lg font-semibold mb-2">Soil Information</h3>
-                            {/* Hiển thị soilPercent nổi bật */}
-                            <div className="bg-green-50 border border-green-300 rounded-lg p-3 mb-2">
-                                <p className="text-3xl font-bold text-green-700">
-                                    Soil Moisture: {soilPercent ?? "--"}%
-                                </p>
-                            </div>
-                        </div>
-                        <div className="border-t pt-4">
-                            <h3 className="text-lg font-semibold mb-2">Rain Information</h3>
-                            <RainLevelChart rainValue={rainValue} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+return (
+  <div className="min-h-screen bg-slate-50">
+    <div className="mx-auto max-w-7xl px-6 py-6">
+      {/* Header: greeting + search + avatar */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col leading-tight">
+          <span className="text-slate-500 text-sm">Hello,</span>
+          <span className="font-bold text-2xl text-slate-900">{name || "Trường"}</span>
         </div>
-    );
+
+       <div className="flex items-center gap-4">
+          {/* Search – dài & thoáng hơn */}
+          <div className="hidden md:flex items-center gap-3 bg-white h-12 px-4 shadow-sm
+                          rounded-xl border border-slate-200
+                          focus-within:ring-2 focus-within:ring-slate-300
+                          w-[21rem] lg:w-[27rem]">
+            <svg className="w-5 h-5 text-slate-500" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M21 20.29L16.65 15.94A7.92 7.92 0 0018 11a8 8 0 10-8 8a7.92 7.92 0 004.94-1.35L20.29 21zM4 11a7 7 0 117 7a7 7 0 01-7-7z"/>
+            </svg>
+            <input
+              type="search"
+              aria-label="Search plant"
+              className="w-full bg-transparent outline-none text-base placeholder-slate-400"
+              placeholder="Search plant here"
+            />
+          </div>
+        </div>
+
+      </div>
+
+      {/* Grid main: center (8 cols) + right (4 cols) */}
+      <div className="grid grid-cols-12 gap-6">
+        {/* CENTER 8/12 */}
+        <div className="col-span-12 lg:col-span-8 space-y-6">
+          {/* Hàng trên: chart lớn + 3/4 thẻ nhỏ */}
+          <div className="grid grid-cols-12 gap-6">
+          {/* Trái: Weather + Rain */}
+            <div className="col-span-12 lg:col-span-8">
+              <div className="flex flex-col gap-6">
+
+                {/* Weather card – standout */}
+                <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-sky-50 via-white to-indigo-50 shadow-sm">
+                  {/* blobs nền cho “chất” hơn */}
+                  <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-sky-200/40 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-14 -right-14 h-48 w-48 rounded-full bg-indigo-200/40 blur-3xl" />
+
+                  {/* Header mỏng */}
+                  <div className="px-5 py-3 flex items-center justify-between border-b border-white/60">
+                    <h3 className="text-base font-semibold text-slate-900">Current Weather</h3>
+                    <div className="text-xs text-slate-600">
+                      {province || "—"} • {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </div>
+                  </div>
+
+                  {/* Body */}
+                  {/* Body – center temperature */}
+                  <div className="px-5 py-8 grid place-items-center text-center">
+                    <div className="flex items-center gap-3">
+                      {iconUrl ? (
+                        <img src={iconUrl} alt="weather" className="w-12 h-12" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-slate-200" />
+                      )}
+                      <div className="text-5xl font-extrabold leading-none text-slate-900">
+                        {Number.isFinite(pTemperature) ? `${Math.round(pTemperature)}°C` : "—"}
+                      </div>
+                    </div>
+                    <div className="mt-2 text-slate-700 text-lg">{condition || "—"}</div>
+                  </div>
+                </div>
+
+                {/* Rain level chart giữ nguyên */}
+                <RainLevelChart rainValue={rainValue} />
+              </div>
+            </div>
+
+
+            {/* Phải: các SensorCard */}
+            <div className="col-span-12 mt-6 lg:col-span-4 flex flex-col gap-4">
+              <SensorCard
+                label="Temperature"
+                value={Number.isFinite(temperature) ? temperature.toFixed(1) : "--"}
+                unit="°C"
+                rawValue={temperature}
+                color="#ef4444"
+                className="rounded-2xl overflow-hidden"
+              />
+              <SensorCard
+                label="Humidity"
+                value={Number.isFinite(humidity) ? humidity.toFixed(1) : "--"}
+                unit="%"
+                rawValue={humidity}
+                color="#3b82f6"
+                className="rounded-2xl overflow-hidden"
+              />
+              <SensorCard
+                label="Soil"
+                value={Number.isFinite(soilPercent) ? soilPercent.toFixed(1) : "--"}
+                unit="%"
+                rawValue={soilPercent}
+                color="#10b981"
+                className="rounded-2xl overflow-hidden"
+              />
+              <SensorCard
+                label="Lux"
+                value={Number.isFinite(lux) ? lux.toFixed(0) : "--"}
+                unit="lux"
+                rawValue={lux}
+                color="#a855f7"
+                className="rounded-2xl overflow-hidden"
+              />
+            </div>
+          </div>
+
+          {/* Hàng dưới: DataChart */}
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12">
+              <div className="rounded-none">
+                <DataChart />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT 4/12: Illustration + harvest schedule */}
+        {/* RIGHT 4/12 */}
+       <div className="col-span-12 lg:col-span-4">
+          <HarvestSchedule
+            province={province}
+            humidity={humidity}
+            soilPercent={soilPercent}
+            lux= {lux}
+          />
+        </div>
+
+      </div>
+    </div>
+  </div>
+);
+
+
 };
 
 export default Monitor;

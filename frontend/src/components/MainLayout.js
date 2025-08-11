@@ -6,7 +6,7 @@ import AccountSettings from "./AccountSettings";
 
 const MainLayout = ({ children, activeItem }) => {
   const [showAccountSettings, setShowAccountSettings] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="bg-blue-50 min-h-screen">
