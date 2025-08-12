@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi.responses import PlainTextResponse, JSONResponse
 from fastapi import Request
 from supabase import create_client, Client
@@ -89,58 +89,10 @@ def mq_consumer():
 
 # ✅ Tự động chạy consumer khi app khởi động
 
-def ensure_farm_table_exists():
-    # Kiểm tra có tồn tại bảng farm không, nếu không có thì tạo mới
-    table_name = "farm"
-
-    create_table_query = f"""
-    CREATE TABLE IF NOT EXISTS public.{table_name} (
-        farm_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        farm_name VARCHAR(36) NOT NULL,
-        location VARCHAR(100) NOT NULL,
-        user_own UUID REFERENCES auth.user_profiles(user_id) ON DELETE CASCADE,
-        create_at TIMESTAMPZ DEFAULT NOW()
-    );
-    """
-
-    try: 
-        supabase.rpc('pg_execute_sql', {'sql': create_table_query})
-        print(f"✅ Table {table_name} is ready.")
-    except Exception as e:
-        print(f"❌ An error occurred: {e}")
-
-def ensure_sensor_table_exists():
-    # Kiểm tra xem có bảng sensor không, nếu không có thì tạo mới
-    table_name = "sensor"
-    
-    create_table_query = f"""
-    CREATE TABLE IF NOT EXISTS public.{table_name} (
-        sensor_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        sensor_name VARCHAR(36) NOT NULL,
-        sensor_type VARCHAR(36) NOT NULL,
-        farm_id UUID REFERENCES public.farm(farm_id) ON DELETE CASCADE,
-        location VARCHAR(100) NOT NULL,
-        connectivity VARCHAR(20) NOT NULL,
-        status VARCHAR(20) NOT NULL,
-        latest_updated TIMESTAMPZ NOT NULL,
-        logs TEXT,
-        create_at TIMESTAMPZ DEFAULT NOW()
-    );
-    """
-
-    try:
-        supabase.rpc('pg_execute_sql', {'sql': create_table_query})
-        print(f"✅ Table {table_name} is ready.")
-    except Exception as e:
-        print(f"❌ An error occurred: {e}")
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 FastAPI is starting up...")
     threading.Thread(target=mq_consumer, daemon=True).start()
-    ensure_farm_table_exists()
-    ensure_sensor_table_exists()
     yield
     print("🛑 FastAPI is shutting down...")
 
@@ -483,14 +435,10 @@ async def create_profile(request: Request):
         print("❌ Error creating profile:", e)
         return JSONResponse({"error": "Server error."}, status_code=500)
 
-
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
 #api for dashboard
 @app.get("/api/dashboard")
 def get_dashboard_data(authorization: str = Header(None)):
+    #Get all data from table "farm" and "sensor"
     if not authorization or not authorization.startswith("Bearer "):
         return JSONResponse({"error": "Missing tokens"}, status_code=401)
 
@@ -502,16 +450,241 @@ def get_dashboard_data(authorization: str = Header(None)):
 
     try:
         # Fetch data from the necessary tables
-        farms = supabase.table("farms").select("*").execute()
-        sensors = supabase.table("sensors").select("*").execute()
-        users = supabase.table("user_profiles").select("*").execute()
+        farms = supabase.table("farm").select("*", count="exact").execute()
+        sensors = supabase.table("sensor").select("*", count="exact").execute()
+        users = supabase.table("user_profiles").select("*", count="exact").execute()
 
-        return {
+        return JSONResponse({
             "farms": farms.data,
             "sensors": sensors.data,
             "users": users.data
-        }
+        })
 
     except Exception as e:
         print("❌ Error fetching dashboard data:", e)
-        return {"error": "Server error."}, 500
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.post("/api/farm")
+async def create_farm(request: Request, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        body = await request.json()
+        
+        insert_data = {
+            "farm_name": body["farm_name"],
+            "location": body["location"],
+            "user_own": user_id,
+        }
+
+        result = supabase.table("farm").insert(insert_data).execute()
+
+        return JSONResponse({"message": "Farm created successfully.", "data": result.data})
+
+    except Exception as e:
+        print("❌ Error creating farm:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+    
+@app.post("/api/sensor")
+async def create_sensor(request: Request, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    try:
+        body = await request.json()
+
+        if not body.get("farm_name") or not body.get("sensor_name") or not body.get("sensor_type") or not body.get("location"):
+            return JSONResponse({"error": "All fields are required"}, status_code=400)
+
+        current_time = datetime.now(timezone.utc).isoformat()
+
+        farm_name = body.get("farm_name")
+
+        farm_id = supabase.table("farm") \
+            .select("*") \
+            .eq("farm_name", farm_name) \
+            .limit(1) \
+            .execute() \
+            .data[0]['farm_id']
+
+        insert_data = {
+            "sensor_name": body["sensor_name"],
+            "sensor_type": body["sensor_type"],
+            "farm_id": farm_id,
+            "location": body["location"],
+            "connectivity": body.get("connectivity", "offline"),
+            "status": body.get("status", "normal"),
+            "latest_updated": current_time,
+            "logs": "Sensor created successfully.",
+            "link": body.get("link", ""),
+        }
+
+        result = supabase.table("sensor").insert(insert_data).execute()
+
+        return JSONResponse({"message": "Sensor created successfully.", "data": result.data})
+
+    except Exception as e:
+        print("❌ Error creating sensor:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.get("/api/sensor/{sensor_id}")
+async def get_sensor(sensor_id: str, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        sensor = supabase.table("sensor").select("*").eq("id", sensor_id).execute()
+        if not sensor.data:
+            return JSONResponse({"error": "Sensor not found"}, status_code=404)
+
+        return JSONResponse({"sensor": sensor.data[0]})
+
+    except Exception as e:
+        print("❌ Error fetching sensor:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.get("/api/farm/{farm_id}")
+async def get_farm(farm_id: str, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        farm = supabase.table("farm").select("*").eq("id", farm_id).execute()
+        if not farm.data:
+            return JSONResponse({"error": "Farm not found"}, status_code=404)
+
+        return JSONResponse({"farm": farm.data[0]})
+
+    except Exception as e:
+        print("❌ Error fetching farm:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+
+@app.patch("/api/farm/{farm_id}")
+async def update_farm(farm_id: str, request: Request, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        body = await request.json()
+        update_data = {k: v for k, v in body.items() if k in ["name", "location"]}
+
+        if not update_data:
+            return JSONResponse({"error": "No valid fields provided"}, status_code=400)
+
+        result = supabase.table("farm").update(update_data).eq("farm_id", farm_id).execute()
+        if not result.data:
+            return JSONResponse({"error": "Farm not found"}, status_code=404)
+
+        return JSONResponse({"message": "Farm updated successfully.", "data": result.data})
+
+    except Exception as e:
+        print("❌ Error updating farm:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+#Thay đổi thông tin cảm biến
+@app.patch("/api/sensor/update-info/{sensor_id}")
+async def update_sensor_info(sensor_id: str, request: Request, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        current_time = datetime.now(timezone.utc).isoformat()
+
+        body = await request.json()
+        update_info = {
+            "sensor_name": body.get("sensor_name"),
+            "sensor_type": body.get("sensor_type"),
+            "sensor_location": body.get("sensor_location"),
+            "logs": "Sensor info updated successfully.",
+            "latest_updated": current_time
+        }
+
+        if not update_info:
+            return JSONResponse({"error": "No valid fields provided"}, status_code=400)
+
+        result = supabase.table("sensor").update(update_info).eq("sensor_id", sensor_id).execute()
+        if not result.data:
+            return JSONResponse({"error": "Sensor not found"}, status_code=404)
+
+        return JSONResponse({"message": "Sensor updated successfully.", "data": result.data})
+
+    except Exception as e:
+        print("❌ Error updating sensor:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.patch("/api/sensor/update-data/{sensor_id}")
+async def update_sensor_data(sensor_id: str, request: Request, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        current_time = datetime.now(timezone.utc).isoformat()
+
+        body = await request.json()
+
+        if not body.get("connectivity") and not body.get("status") and not body.get("latest_updated"):
+            return JSONResponse({"error": "No valid fields provided"}, status_code=400)
+        
+        if body.get("connectivity"):
+            update_data = {
+                "connectivity": body.get("connectivity"),
+                "latest_updated": current_time,
+                "logs": "Sensor connectivity updated successfully."
+            }
+        else:
+            update_data = {
+                "status": body.get("status"),
+                "latest_updated": current_time,
+                "logs": "Sensor status updated successfully."
+            }
+
+        result = supabase.table("sensor").update(update_data).eq("sensor_id", sensor_id).execute()
+        if not result.data:
+            return JSONResponse({"error": "Sensor not found"}, status_code=404)
+
+        return JSONResponse({"message": "Sensor updated successfully.", "data": result.data})
+
+    except Exception as e:
+        print("❌ Error updating sensor:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8000)
