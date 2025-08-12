@@ -89,11 +89,58 @@ def mq_consumer():
 
 # ✅ Tự động chạy consumer khi app khởi động
 
+def ensure_farm_table_exists():
+    # Kiểm tra có tồn tại bảng farm không, nếu không có thì tạo mới
+    table_name = "farm"
+
+    create_table_query = f"""
+    CREATE TABLE IF NOT EXISTS public.{table_name} (
+        farm_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        farm_name VARCHAR(36) NOT NULL,
+        location VARCHAR(100) NOT NULL,
+        user_own UUID REFERENCES auth.user_profiles(user_id) ON DELETE CASCADE,
+        create_at TIMESTAMPZ DEFAULT NOW()
+    );
+    """
+
+    try: 
+        supabase.rpc('pg_execute_sql', {'sql': create_table_query})
+        print(f"✅ Table {table_name} is ready.")
+    except Exception as e:
+        print(f"❌ An error occurred: {e}")
+
+def ensure_sensor_table_exists():
+    # Kiểm tra xem có bảng sensor không, nếu không có thì tạo mới
+    table_name = "sensor"
+    
+    create_table_query = f"""
+    CREATE TABLE IF NOT EXISTS public.{table_name} (
+        sensor_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        sensor_name VARCHAR(36) NOT NULL,
+        sensor_type VARCHAR(36) NOT NULL,
+        farm_id UUID REFERENCES public.farm(farm_id) ON DELETE CASCADE,
+        location VARCHAR(100) NOT NULL,
+        connectivity VARCHAR(20) NOT NULL,
+        status VARCHAR(20) NOT NULL,
+        latest_updated TIMESTAMPZ NOT NULL,
+        logs TEXT,
+        create_at TIMESTAMPZ DEFAULT NOW()
+    );
+    """
+
+    try:
+        supabase.rpc('pg_execute_sql', {'sql': create_table_query})
+        print(f"✅ Table {table_name} is ready.")
+    except Exception as e:
+        print(f"❌ An error occurred: {e}")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 FastAPI is starting up...")
     threading.Thread(target=mq_consumer, daemon=True).start()
+    ensure_farm_table_exists()
+    ensure_sensor_table_exists()
     yield
     print("🛑 FastAPI is shutting down...")
 
@@ -439,3 +486,32 @@ async def create_profile(request: Request):
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+#api for dashboard
+@app.get("/api/dashboard")
+def get_dashboard_data(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        # Fetch data from the necessary tables
+        farms = supabase.table("farms").select("*").execute()
+        sensors = supabase.table("sensors").select("*").execute()
+        users = supabase.table("user_profiles").select("*").execute()
+
+        return {
+            "farms": farms.data,
+            "sensors": sensors.data,
+            "users": users.data
+        }
+
+    except Exception as e:
+        print("❌ Error fetching dashboard data:", e)
+        return {"error": "Server error."}, 500
