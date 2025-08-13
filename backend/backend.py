@@ -644,6 +644,7 @@ async def update_sensor_info(sensor_id: str, request: Request, authorization: st
         print("❌ Error updating sensor:", e)
         return JSONResponse({"error": "Server error."}, status_code=500)
 
+#Thay đổi dữ liệu của cảm biến
 @app.patch("/api/sensor/update-data/{sensor_id}")
 async def update_sensor_data(sensor_id: str, request: Request, authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
@@ -684,6 +685,80 @@ async def update_sensor_data(sensor_id: str, request: Request, authorization: st
 
     except Exception as e:
         print("❌ Error updating sensor:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.get("/api/info")
+async def get_info(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        farms = supabase.table("farm").select("*").eq("user_own", user_id).execute()
+        if not farms.data:
+            return JSONResponse({"error": "No info found"}, status_code=404)
+        
+        sensors = []
+
+        for farm in farms.data:
+            sensor = supabase.table("sensor") \
+                .select("*").eq("farm_id", farm['farm_id']).execute()
+            if sensor.data:
+                sensors.extend(sensor.data)
+
+        return JSONResponse({"farms": farms.data, "sensors": sensors})
+
+    except Exception as e:
+        print("❌ Error fetching info:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.delete("/api/farm/{farm_id}")
+async def delete_farm(farm_id: str, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        result = supabase.table("farm").delete().eq("farm_id", farm_id).execute()
+        if not result.data:
+            return JSONResponse({"error": "Farm not found"}, status_code=404)
+
+        return JSONResponse({"message": "Farm deleted successfully."})
+
+    except Exception as e:
+        print("❌ Error deleting farm:", e)
+        return JSONResponse({"error": "Server error."}, status_code=500)
+
+@app.delete("/api/sensor/{sensor_id}")
+async def delete_sensor(sensor_id: str, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return JSONResponse({"error": "Missing tokens"}, status_code=401)
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_id = decode_token(token)
+
+    if not user_id:
+        return JSONResponse({"error": "Invalid token"}, status_code=403)
+
+    try:
+        result = supabase.table("sensor").delete().eq("sensor_id", sensor_id).execute()
+        if not result.data:
+            return JSONResponse({"error": "Sensor not found"}, status_code=404)
+
+        return JSONResponse({"message": "Sensor deleted successfully."})
+
+    except Exception as e:
+        print("❌ Error deleting sensor:", e)
         return JSONResponse({"error": "Server error."}, status_code=500)
 
 if __name__ == '__main__':
