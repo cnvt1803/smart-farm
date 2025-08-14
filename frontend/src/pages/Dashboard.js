@@ -11,7 +11,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col gap-8 p-4">
       <HeaderDashboard directoryLink="Dashboard" />
-      <StatusBar numberOfFarms={5} onlineDevices={10} warningDevices={2} offlineDevices={1} />
+      <StatusBar />
       <div className="flex flex-col gap-8">
         <div className="grid grid-cols-[700px_auto] gap-8">
           <ErrorLogs />

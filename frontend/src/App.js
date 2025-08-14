@@ -7,6 +7,7 @@ import RegisterPage from "./pages/Register"
 import MainLayout from "./components/MainLayout";
 import ForgotPasswordPage from "./pages/ForgotPassword"
 import Dashboard from "./pages/Dashboard";
+import Farm from "./pages/Farm";
 
 function App() {
   return (
@@ -39,6 +40,14 @@ function App() {
           element={
             <MainLayout activeItem="dashboard">
               <Dashboard />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/dashboard/:farmId"
+          element={
+            <MainLayout activeItem="farm">
+              <Farm />
             </MainLayout>
           }
         />

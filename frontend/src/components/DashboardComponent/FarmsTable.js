@@ -153,7 +153,7 @@ const FarmsTable = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       <div className="flex justify-center items-center gap-3">
                         <button 
-                          onClick={() => window.location.href = `/farm/${farm.farm_id}`}
+                          onClick={() => window.location.href = `/dashboard/${farm.farm_id}`}
                           className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
                           title="View Details"
                         >

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { getInfo } from '../../data/data.js'
-import { FaMapMarkerAlt, FaEye, FaLeaf, FaExclamationTriangle } from 'react-icons/fa'
+import { FaMapMarkerAlt, FaLeaf, FaExclamationTriangle } from 'react-icons/fa'
 
 const Map = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedFarm, setSelectedFarm] = useState(null);
-  const [hoveredFarm, setHoveredFarm] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,16 +51,10 @@ const Map = () => {
     ).length;
   };
 
-  // Get total sensor count for a farm
-  const getTotalSensorCount = (farmId) => {
-    if (!data?.sensors) return 0;
-    return data.sensors.filter(sensor => sensor.farm_id === farmId).length;
-  };
-
   if (loading) {
     return (
-      <div className="flex flex-col gap-2 min-h-60 p-3 border border-black">
-        <h2 className="text-2xl text-center">FARM LOCATIONS MAP</h2>
+      <div className="flex flex-col gap-2 min-h-60 p-4 border-gray-200 border bg-stone-100 shadow-lg rounded-xl">
+        <h2 className="text-2xl text-center font-bold text-gray-800">FARM LOCATIONS MAP</h2>
         <div className="flex justify-center items-center h-32">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
@@ -72,8 +64,8 @@ const Map = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col gap-2 min-h-60 p-3 border border-black">
-        <h2 className="text-2xl text-center">FARM LOCATIONS MAP</h2>
+      <div className="flex flex-col gap-2 min-h-60 p-4 border-gray-200 border bg-stone-100 shadow-lg rounded-xl">
+        <h2 className="text-2xl text-center font-bold text-gray-800">FARM LOCATIONS MAP</h2>
         <div className="flex justify-center items-center h-32">
           <p className="text-red-500">Error loading map: {error}</p>
         </div>
@@ -84,7 +76,7 @@ const Map = () => {
   const farms = data?.farms || [];
 
   return (
-    <div className="flex flex-col gap-2 min-h-60 p-4 border-gray-200 border bg-stone-100   shadow-lg rounded-xl">
+    <div className="flex flex-col gap-2 min-h-60 p-4 border-gray-200 border bg-stone-100 shadow-lg rounded-xl">
       <h2 className="text-2xl text-center font-bold text-gray-800">FARM LOCATIONS MAP</h2>
       
       {farms.length > 0 ? (
@@ -100,7 +92,6 @@ const Map = () => {
             {farms.map((farm, index) => {
               const position = generateRandomPosition(index, farm.farm_id);
               const errorCount = getErrorSensorCount(farm.farm_id);
-              const totalSensors = getTotalSensorCount(farm.farm_id);
               const hasErrors = errorCount > 0;
               
               return (
@@ -108,15 +99,12 @@ const Map = () => {
                   key={farm.farm_id || index}
                   className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
                   style={position}
-                  onMouseEnter={() => setHoveredFarm({...farm, errorCount, totalSensors})}
-                  onMouseLeave={() => setHoveredFarm(null)}
-                  onClick={() => setSelectedFarm({...farm, errorCount, totalSensors})}
                 >
                   {/* Farm Marker */}
                   <div className="relative">
                     <div className={`w-10 h-10 rounded-full border-3 border-white shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-200 ${
                       hasErrors 
-                        ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                        ? 'bg-red-500 hover:bg-red-600' 
                         : 'bg-green-500 hover:bg-green-600'
                     }`}>
                       {hasErrors ? (
@@ -136,16 +124,11 @@ const Map = () => {
                     {/* Farm Name Label */}
                     <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-white px-2 py-1 rounded-md shadow-md border text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
                       {farm.farm_name}
-                      <div className="text-gray-500 text-xs">
-                        {!hasErrors && (
-                          <span className="text-green-600">
-                            OK
-                          </span>
-                        )}
-                        {hasErrors && (
-                          <span className="text-red-600 ml-1">• {errorCount} error{errorCount !== 1 ? 's' : ''}</span>
-                        )}
-                      </div>
+                      {(hasErrors && (
+                        <div className="text-red-600 text-xs">
+                          {errorCount} error{errorCount !== 1 ? 's' : ''}
+                        </div>
+                      )) || <div className="text-green-600 text-xs">No Issues</div>}
                     </div>
                   </div>
                 </div>
@@ -193,13 +176,6 @@ const Map = () => {
               </div>
               <div className="text-blue-600 font-medium">Total Errors</div>
             </div>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
-            <p className="text-gray-600 text-sm">
-              <strong>Hover over farm markers</strong> to see sensor status and error counts
-            </p>
           </div>
         </>
       ) : (

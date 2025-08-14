@@ -121,7 +121,7 @@ const updateSensorInfo = async (sensorId, updatedInfo) => {
 }
 
 const updateSensorData = async (sensorId, updatedData) => {
-  const res = await fetch(`${API_SERVER}/api/sensor/${sensorId}/data`, {
+  const res = await fetch(`${API_SERVER}/api/sensor/update-data/${sensorId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -171,6 +171,23 @@ const deleteSensor = async (sensorId) => {
   return res;
 }
 
+const getAnalytics = async (farmId, period = '7d') => {
+  const res = await fetch(`${API_SERVER}/api/analytics/${farmId}?period=${period}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch analytics')
+  }
+
+  const data = await res.json()
+  return data
+}
+
 export {
   getInfo,
   createFarm,
@@ -181,5 +198,6 @@ export {
   updateSensorInfo,
   updateSensorData,
   deleteFarm,
-  deleteSensor
+  deleteSensor,
+  getAnalytics
 }

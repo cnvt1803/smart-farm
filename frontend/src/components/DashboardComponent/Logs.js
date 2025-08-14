@@ -162,13 +162,13 @@ const Logs = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider w-1/4">
                     Sensor Name
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider w-1/4">
                     Farm
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider w-1/2">
                     Logs
                   </th>
                 </tr>
@@ -182,11 +182,11 @@ const Logs = () => {
                     }`}
                   >
                     {/* Sensor Name Column */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap w-1/4">
                       <div className="flex items-center gap-2">
                         {getLogIcon(log.status)}
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-gray-900 truncate">
                             {log.sensor_name}
                           </div>
                           <div className="flex items-center gap-2">
@@ -202,19 +202,19 @@ const Logs = () => {
                     </td>
                     
                     {/* Farm Column */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 font-medium">
+                    <td className="px-4 py-3 whitespace-nowrap w-1/4">
+                      <div className="text-sm text-gray-900 font-medium truncate">
                         {log.farm_name}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 truncate">
                         ID: {log.farm_id?.slice(0, 8)}...
                       </div>
                     </td>
                     
                     {/* Logs Column */}
-                    <td className="px-4 py-3">
-                      <div className="text-sm text-gray-900 max-w-xs">
-                        <div className="truncate" title={log.logs}>
+                    <td className="px-4 py-3 w-1/2">
+                      <div className="text-sm text-gray-900">
+                        <div className="break-words line-clamp-2" title={log.logs}>
                           {log.logs}
                         </div>
                         {log.logs.length > 50 && (
