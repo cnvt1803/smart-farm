@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -33,6 +34,7 @@ const FarmData = ({
   farmData 
 }) => {
   const [activeTab, setActiveTab] = useState('sensors');
+  const navigate = useNavigate();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -265,7 +267,7 @@ const FarmData = ({
                       <td className="px-4 py-4 whitespace-nowrap text-sm font-medium w-40">
                         <div className="flex gap-2">
                           <button 
-                            onClick={() => alert(`View details for ${sensor.sensor_name || sensor.name}`)}
+                            onClick={() => navigate(`/dashboard/${sensor.farm_id}/${sensor.id}`)}
                             className="text-blue-600 hover:text-blue-900 p-2 rounded-md hover:bg-blue-50 transition-colors"
                             title="View Details"
                           >

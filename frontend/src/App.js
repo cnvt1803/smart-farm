@@ -8,6 +8,7 @@ import MainLayout from "./components/MainLayout";
 import ForgotPasswordPage from "./pages/ForgotPassword"
 import Dashboard from "./pages/Dashboard";
 import Farm from "./pages/Farm";
+import Sensor from "./pages/Sensor";
 
 function App() {
   return (
@@ -48,6 +49,14 @@ function App() {
           element={
             <MainLayout activeItem="farm">
               <Farm />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/dashboard/:farmId/:sensorId"
+          element={
+            <MainLayout activeItem="sensor">
+              <Sensor />
             </MainLayout>
           }
         />

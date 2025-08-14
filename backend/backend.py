@@ -552,7 +552,7 @@ async def get_sensor(sensor_id: str, authorization: str = Header(None)):
         return JSONResponse({"error": "Invalid token"}, status_code=403)
 
     try:
-        sensor = supabase.table("sensor").select("*").eq("id", sensor_id).execute()
+        sensor = supabase.table("sensor").select("*").eq("sensor_id", sensor_id).execute()
         if not sensor.data:
             return JSONResponse({"error": "Sensor not found"}, status_code=404)
 
@@ -574,7 +574,7 @@ async def get_farm(farm_id: str, authorization: str = Header(None)):
         return JSONResponse({"error": "Invalid token"}, status_code=403)
 
     try:
-        farm = supabase.table("farm").select("*").eq("id", farm_id).execute()
+        farm = supabase.table("farm").select("*").eq("farm_id", farm_id).execute()
         if not farm.data:
             return JSONResponse({"error": "Farm not found"}, status_code=404)
 
