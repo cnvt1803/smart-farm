@@ -158,7 +158,7 @@ const Logs = () => {
       {logs.length > 0 ? (
         <>
           {/* Logs Table */}
-          <div className="overflow-hidden rounded-lg border border-gray-200 max-h-64 overflow-y-auto">
+          <div className="overflow-hidden rounded-lg border border-gray-200 h-full overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0">
                 <tr>

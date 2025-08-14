@@ -1,8 +1,9 @@
-const API_SERVER = `http://localhost:8000`;
+//import { API_BASE_URL } from "../config"
+const API_BASE_URL = "http://localhost:8000"
 
 // Get info about the farms and sensors of user
 const getInfo = async () => {
-  const res = await fetch(`${API_SERVER}/api/info`, {
+  const res = await fetch(`${API_BASE_URL}/api/info`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -19,7 +20,7 @@ const getInfo = async () => {
 }
 
 const createFarm = async (inputData) => {
-  const res = await fetch(`${API_SERVER}/api/farm`, {
+  const res = await fetch(`${API_BASE_URL}/api/farm`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ const createFarm = async (inputData) => {
 }
 
 const createSensor = async (inputData) => {
-  const res = await fetch(`${API_SERVER}/api/sensor`, {
+  const res = await fetch(`${API_BASE_URL}/api/sensor`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ const createSensor = async (inputData) => {
 }
 
 const getSensorInfo = async (sensorId) => {
-  const res = await fetch(`${API_SERVER}/api/sensor/${sensorId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/sensor/${sensorId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -70,7 +71,7 @@ const getSensorInfo = async (sensorId) => {
 }
 
 const getFarmInfo = async (farmId) => {
-  const res = await fetch(`${API_SERVER}/api/farm/${farmId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/farm/${farmId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ const getFarmInfo = async (farmId) => {
 }
 
 const updateFarmInfo = async (farmId, updatedData) => {
-  const res = await fetch(`${API_SERVER}/api/farm/${farmId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/farm/${farmId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ const updateFarmInfo = async (farmId, updatedData) => {
 }
 
 const updateSensorInfo = async (sensorId, updatedInfo) => {
-  const res = await fetch(`${API_SERVER}/api/sensor/${sensorId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/sensor/${sensorId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -121,7 +122,7 @@ const updateSensorInfo = async (sensorId, updatedInfo) => {
 }
 
 const updateSensorData = async (sensorId, updatedData) => {
-  const res = await fetch(`${API_SERVER}/api/sensor/update-data/${sensorId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/sensor/update-data/${sensorId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -138,7 +139,7 @@ const updateSensorData = async (sensorId, updatedData) => {
 }
 
 const deleteFarm = async (farmId) => {
-  const res = await fetch(`${API_SERVER}/api/farm/${farmId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/farm/${farmId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -155,7 +156,7 @@ const deleteFarm = async (farmId) => {
 }
 
 const deleteSensor = async (sensorId) => {
-  const res = await fetch(`${API_SERVER}/api/sensor/${sensorId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/sensor/${sensorId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -172,7 +173,7 @@ const deleteSensor = async (sensorId) => {
 }
 
 const getAnalytics = async (farmId, period = '7d') => {
-  const res = await fetch(`${API_SERVER}/api/analytics/${farmId}?period=${period}`, {
+  const res = await fetch(`${API_BASE_URL}/api/analytics/${farmId}?period=${period}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

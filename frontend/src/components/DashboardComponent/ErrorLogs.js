@@ -149,7 +149,7 @@ const ErrorLogs = () => {
                     </span>
                   </div>
                 </div>
-                <button className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-red-100 rounded-lg">
+                <button onClick={() => window.location.href = `/dashboard/${errorLog.farm_id}/${errorLog.sensor_id}`} className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-red-100 rounded-lg">
                   <FaExclamationTriangle className="text-red-500 text-sm" />
                 </button>
               </div>
@@ -166,14 +166,7 @@ const ErrorLogs = () => {
         )}
       </div>
 
-      {/* Footer with action */}
-      {filteredErrorLogs.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-gray-100">
-          <button className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-2 px-4 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 font-medium text-sm">
-            View All Error Logs
-          </button>
-        </div>
-      )}
+  
     </div>
   );
 };

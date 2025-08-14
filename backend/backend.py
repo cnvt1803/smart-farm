@@ -710,8 +710,8 @@ async def get_info(authorization: str = Header(None)):
     try:
         farms = supabase.table("farm").select("*").eq("user_own", user_id).execute()
         if not farms.data:
-            return JSONResponse({"error": "No info found"}, status_code=404)
-        
+            return JSONResponse({"farm": [], "sensors": []})
+
         sensors = []
 
         for farm in farms.data:
