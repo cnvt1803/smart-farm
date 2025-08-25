@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/footer.png";
+import Logo from "../assets/logo-full.png";
 import { createClient } from "@supabase/supabase-js";
 import { API_BASE_URL } from "../config";
 const supabase = createClient(
@@ -82,16 +82,16 @@ const RegisterPage = () => {
   return (
     <div className="flex h-screen justify-center items-center bg-blue-100">
       <div className="w-full max-w-md flex flex-col justify-center items-center px-8 bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-lg py-10">
-        <img src={Logo} alt="SmartSprout" className="w-24 mb-4" />
-        <h2 className="text-3xl font-bold text-blue-500 font-dancing">SmartSprout</h2>
-        <p className="text-gray-500 mb-6">Create a new account to get started</p>
+        <img src={Logo} alt="SmartSprout" className="w-40" />
+        <h2 className="text-3xl font-bold text-blue-500 font-dancing">SmartFarm</h2>
+        <p className="text-gray-500 mb-6">Tạo một tài khoản mới để bắt đầu</p>
 
         <form className="w-full" onSubmit={handleSubmit}>
-          <label className="block text-gray-700 font-medium mb-1">Display name</label>
+          <label className="block text-gray-700 font-medium mb-1">Tên hiển thị</label>
           <input
             type="text"
             name="fullName"
-            placeholder="Enter display name"
+            placeholder="Nhập tên hiển thị"
             className="w-full p-3 border rounded-lg mb-4"
             value={formData.fullName}
             onChange={handleChange}
@@ -102,29 +102,29 @@ const RegisterPage = () => {
           <input
             type="email"
             name="email"
-            placeholder="Enter email"
+            placeholder="Nhập email"
             className="w-full p-3 border rounded-lg mb-4"
             value={formData.email}
             onChange={handleChange}
             required
           />
 
-          <label className="block text-gray-700 font-medium mb-1">Password</label>
+          <label className="block text-gray-700 font-medium mb-1">Mật khẩu</label>
           <input
             type="password"
             name="password"
-            placeholder="Enter password"
+            placeholder="Nhập mật khẩu"
             className="w-full p-3 border rounded-lg mb-4"
             value={formData.password}
             onChange={handleChange}
             required
           />
 
-          <label className="block text-gray-700 font-medium mb-1">Confirm password</label>
+          <label className="block text-gray-700 font-medium mb-1">Xác nhận mật khẩu</label>
           <input
             type="password"
             name="confirmPassword"
-            placeholder="Confirm password"
+            placeholder="Xác nhận mật khẩu"
             className="w-full p-3 border rounded-lg mb-4"
             value={formData.confirmPassword}
             onChange={handleChange}
@@ -155,7 +155,7 @@ const RegisterPage = () => {
           onClick={() => navigate("/login")}
           className="mt-4 text-blue-500 hover:underline"
         >
-          Already have an account? Sign in now
+          Bạn đã có tài khoản? Đăng nhập ngay!
         </button>
       </div>
     </div>

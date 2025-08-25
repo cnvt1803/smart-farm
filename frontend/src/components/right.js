@@ -38,9 +38,9 @@ export default function HarvestSchedule({
   const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   const tip = (() => {
-    if (Number.isFinite(soilPercent) && soilPercent < 35) return "Soil is dry — water this evening for 10–15 minutes.";
-    if (Number.isFinite(humidity) && humidity > 85)       return "High humidity — watch for fungal diseases.";
-    return "Conditions look fine — keep your regular schedule.";
+    if (Number.isFinite(soilPercent) && soilPercent < 35) return "Đất khô – hãy tưới nước vào buổi tối trong 10–15 phút.";
+    if (Number.isFinite(humidity) && humidity > 85)       return "Độ ẩm cao — chú ý đến các bệnh do nấm.";
+    return "Tình hình có vẻ ổn - hãy giữ lịch trình thường xuyên của bạn.";
   })();
 
   return (
@@ -74,7 +74,7 @@ export default function HarvestSchedule({
         </div>
 
         {/* Today overview */}
-        <h2 className="mt-6 mb-5 text-3xl font-extrabold tracking-tight">Today overview</h2>
+        <h2 className="mt-6 mb-5 text-3xl font-extrabold tracking-tight">Tổng quan hôm nay</h2>
         <div className="grid grid-cols-3 gap-3">
           <Stat
             icon={<FaTint className="text-sky-300" />}
@@ -103,9 +103,9 @@ export default function HarvestSchedule({
         </div>
 
         {/* Tiêu đề & mô tả */}
-        <h2 className="mt-6 text-3xl font-extrabold tracking-tight">Harvest schedule</h2>
+        <h2 className="mt-6 text-3xl font-extrabold tracking-tight">Lịch thu hoạch</h2>
         <p className="text-blue-100/80 text-sm leading-relaxed mt-3">
-          Ask a question of the support question, Manage request, report an issues.
+          Đặt câu hỏi hỗ trợ, Quản lý yêu cầu, báo cáo sự cố.
         </p>
 
         {/* Danh sách lịch */}

@@ -21,11 +21,11 @@ import {
 
 /* ================= Rain levels ================= */
 const rainLevels = [
-  { level: 1, label: "No Rain",        range: [3500, Infinity], desc: "Surface completely dry", colorFrom: "#cbd5e1", colorTo: "#94a3b8" },
-  { level: 2, label: "Very Light",     range: [3000, 3500],     desc: "Slightly damp",          colorFrom: "#93c5fd", colorTo: "#60a5fa" },
-  { level: 3, label: "Light Rain",     range: [2000, 3000],     desc: "Some water accumulation",colorFrom: "#60a5fa", colorTo: "#3b82f6" },
-  { level: 4, label: "Moderate",       range: [1000, 2000],     desc: "Surface mostly wet",     colorFrom: "#38bdf8", colorTo: "#0ea5e9" },
-  { level: 5, label: "Heavy Rain",     range: [0, 1000],        desc: "Flooded surface",        colorFrom: "#818cf8", colorTo: "#4f46e5" },
+  { level: 1, label: "Không mưa",        range: [3500, Infinity], desc: "Bề mặt khô thoáng", colorFrom: "#cbd5e1", colorTo: "#94a3b8" },
+  { level: 2, label: "Mưa rất nhẹ",     range: [3000, 3500],     desc: "Hơi ẩm",          colorFrom: "#93c5fd", colorTo: "#60a5fa" },
+  { level: 3, label: "Mưa nhẹ",     range: [2000, 3000],     desc: "Có thể tích tụ nước",colorFrom: "#60a5fa", colorTo: "#3b82f6" },
+  { level: 4, label: "Mưa vừa",       range: [1000, 2000],     desc: "Toàn bộ bề mặt ướt",     colorFrom: "#38bdf8", colorTo: "#0ea5e9" },
+  { level: 5, label: "Mưa lớn",     range: [0, 1000],        desc: "Bề mặt ngập nước",        colorFrom: "#818cf8", colorTo: "#4f46e5" },
 ];
 const getRainLevel = (v) =>
   rainLevels.find((lv) => v >= lv.range[0] && v < lv.range[1]) || rainLevels[0];
@@ -58,8 +58,8 @@ const sampleData = {
 const colorMap = {
   Temperature: "#ef4444", // red
   Humidity: "#3b82f6",    // blue
-  Rainfall: "#8b5cf6",    // violet (chỉ dùng icon & chip; bars có màu riêng theo level)
-  Lux: "#f59e0b",         // amber (ấm hơn #facc15)
+  Rainfall: "#8b5cf6",    // violet
+  Lux: "#f59e0b",         // amber (
   Soil: "#10b981",        // emerald
 };
 const unitOf = (mode) =>
@@ -166,8 +166,8 @@ export default function DataChart() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-baseline gap-2">
-          <h2 className="text-xl font-semibold text-slate-900">Weekly Sensor Chart</h2>
-          <span className="text-xs text-slate-500 hidden sm:inline">({mode})</span>
+          <h2 className="text-xl font-semibold text-slate-900">Biểu đồ cảm biến hàng tuần</h2>
+          {/* <span className="text-xs text-slate-500 hidden sm:inline">({mode})</span> */}
         </div>
 
         {/* Segmented control w/ icons */}

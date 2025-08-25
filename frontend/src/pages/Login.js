@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/footer.png";
+import Logo from "../assets/logo-full.png";
 import { API_BASE_URL } from "../config"; 
 
 const LoginPage = () => {
@@ -48,25 +48,25 @@ const handleLogin = async (e) => {
   return (
     <div className="flex h-screen justify-center items-center bg-blue-100">
       <div className="w-full max-w-md flex flex-col justify-center items-center px-8 bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-lg py-10">
-        <img src={Logo} alt="SmartSprout" className="w-24 mb-4" />
+        <img src={Logo} alt="SmartSprout" className="w-40 " />
         <h2 className="text-3xl font-bold text-greeblue-500 font-dancing">SmartFarm</h2>
-        <p className="text-gray-500 mb-6">Welcome to SmartFarm web app</p>
+        <p className="text-gray-500 mb-6">Chào mừng đến với SmartFarm web app</p>
 
         <form className="w-full" onSubmit={handleLogin}>
           <label className="block text-gray-700 font-medium mb-1">Email</label>
           <input
             type="email"
-            placeholder="Enter email"
+            placeholder="Nhập email"
             className="w-full p-3 border rounded-lg mb-4"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label className="block text-gray-700 font-medium mb-1">Password</label>
+          <label className="block text-gray-700 font-medium mb-1">Mật khẩu</label>
           <input
             type="password"
-            placeholder="Enter password"
+            placeholder="Nhập mật khẩu"
             className="w-full p-3 border rounded-lg mb-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -78,14 +78,14 @@ const handleLogin = async (e) => {
           <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
             <div>
               <input type="checkbox" id="remember" className="mr-1" />
-              <label htmlFor="remember">Save login</label>
+              <label htmlFor="remember">Lưu đăng nhập</label>
             </div>
             <button
               type="button"
               onClick={() => navigate("/forgot-password")}
               className="text-blue-500 hover:underline"
             >
-              Forgot password
+              Quên mật khẩu?
             </button>
           </div>
 
@@ -102,13 +102,13 @@ const handleLogin = async (e) => {
           onClick={() => navigate("/")}
           className="mt-4 text-blue-500 hover:underline"
         >
-          Back to home page
+          Trở về trang chủ
         </button>
         <button
             onClick={() => navigate("/register")}
             className="block mx-auto m-2 mb-4 text-blue-500 hover:underline"
           >
-            Don't have an account? Register now
+            Không có tài khoản? Đăng ký ngay!
           </button>
       </div>
     </div>

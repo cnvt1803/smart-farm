@@ -41,7 +41,7 @@ const ForgotPasswordPage = () => {
         <div className="flex flex-col items-center">
           <img src={Logo} alt="SmartSprout" className="w-24 mb-4" />
           <h2 className="text-3xl font-bold text-blue-500 font-dancing">SmartFarm</h2>
-          <p className="text-gray-500 mb-6">Forgot your password?</p>
+          <p className="text-gray-500 mb-6">Bạn quên mật khẩu?</p>
         </div>
 
         <form onSubmit={handleForgotPassword}>

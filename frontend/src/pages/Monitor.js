@@ -99,7 +99,7 @@ const Monitor = () => {
       const data = await res.json();
       setTemperature(parseFloat(data.temperature));
       setHumidity(parseFloat(data.humidity));
-      setSoilPercent(parseFloat(data.soilPercent) * 100);
+      setSoilPercent(parseFloat(data.soilPercent) );
       setLux(parseFloat(data.lux));
       setRainValue(parseFloat(data.rainValue));
       setWindKph(parseFloat(data.windKph));
@@ -116,12 +116,11 @@ return (
       {/* Header: greeting + search + avatar */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex flex-col leading-tight">
-          <span className="text-slate-500 text-sm">Hello,</span>
+          <span className="text-slate-500 text-sm">Chào,</span>
           <span className="font-bold text-2xl text-slate-900">{name || "Trường"}</span>
         </div>
-
-       <div className="flex items-center gap-4">
-          {/* Search – dài & thoáng hơn */}
+ {/* Search */}
+       {/* <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-3 bg-white h-12 px-4 shadow-sm
                           rounded-xl border border-slate-200
                           focus-within:ring-2 focus-within:ring-slate-300
@@ -136,7 +135,7 @@ return (
               placeholder="Search plant here"
             />
           </div>
-        </div>
+        </div> */}
 
       </div>
 
@@ -152,13 +151,12 @@ return (
 
                 {/* Weather card – standout */}
                 <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-sky-50 via-white to-indigo-50 shadow-sm">
-                  {/* blobs nền cho “chất” hơn */}
                   <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-sky-200/40 blur-3xl" />
                   <div className="pointer-events-none absolute -bottom-14 -right-14 h-48 w-48 rounded-full bg-indigo-200/40 blur-3xl" />
 
                   {/* Header mỏng */}
                   <div className="px-5 py-3 flex items-center justify-between border-b border-white/60">
-                    <h3 className="text-base font-semibold text-slate-900">Current Weather</h3>
+                    <h3 className="text-base font-semibold text-slate-900">Thời tiết hiện tại</h3>
                     <div className="text-xs text-slate-600">
                       {province || "—"} • {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </div>
@@ -181,24 +179,24 @@ return (
                   </div>
                 </div>
 
-                {/* Rain level chart giữ nguyên */}
+                {/* Rain level chart */}
                 <RainLevelChart rainValue={rainValue} />
               </div>
             </div>
 
 
-            {/* Phải: các SensorCard */}
+            {/* Phải: 4 thẻ cảm biến */}
             <div className="col-span-12 mt-6 lg:col-span-4 flex flex-col gap-4">
               <SensorCard
-                label="Temperature"
-                value={Number.isFinite(temperature) ? temperature.toFixed(1) : "--"}
+                label="Nhiệt độ"
+                value={Number.isFinite(Number(temperature)) ? Number(temperature).toFixed(1) : "--"}
                 unit="°C"
                 rawValue={temperature}
                 color="#ef4444"
                 className="rounded-2xl overflow-hidden"
               />
               <SensorCard
-                label="Humidity"
+                label="Độ ẩm"
                 value={Number.isFinite(humidity) ? humidity.toFixed(1) : "--"}
                 unit="%"
                 rawValue={humidity}
@@ -206,7 +204,7 @@ return (
                 className="rounded-2xl overflow-hidden"
               />
               <SensorCard
-                label="Soil"
+                label="Đất"
                 value={Number.isFinite(soilPercent) ? soilPercent.toFixed(1) : "--"}
                 unit="%"
                 rawValue={soilPercent}
@@ -214,7 +212,7 @@ return (
                 className="rounded-2xl overflow-hidden"
               />
               <SensorCard
-                label="Lux"
+                label="Ánh sáng"
                 value={Number.isFinite(lux) ? lux.toFixed(0) : "--"}
                 unit="lux"
                 rawValue={lux}

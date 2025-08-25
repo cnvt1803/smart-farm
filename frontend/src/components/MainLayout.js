@@ -13,7 +13,7 @@ const MainLayout = ({ children, activeItem }) => {
       {/* Fixed Header */}
       <Header onOpenSettings={() => setShowAccountSettings(true)} />
 
-      <div className="flex relative pt-[9vh]">
+      <div className="flex relative pt-[8vh]">
         {/* Sidebar */}
         <div className={`transition-all duration-300 ${isSidebarOpen ? "w-64" : "w-0"}`}>
           <div className={`${isSidebarOpen ? "p-4" : "p-0"} h-[91vh]`}>

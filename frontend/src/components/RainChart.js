@@ -2,11 +2,11 @@ import React from "react";
 
 /** Config mức mưa + màu */
 const rainLevels = [
-  { level: 1, key: "no",       label: "No Rain",    range: [3500, Infinity], desc: "Surface completely dry",  from: "#cbd5e1", to: "#94a3b8" },
-  { level: 2, key: "vlight",   label: "Very Light", range: [3000, 3500],    desc: "Slightly damp",          from: "#93c5fd", to: "#60a5fa" },
-  { level: 3, key: "light",    label: "Light Rain", range: [2000, 3000],    desc: "Some water accumulation",from: "#60a5fa", to: "#3b82f6" },
-  { level: 4, key: "moderate", label: "Moderate",   range: [1000, 2000],    desc: "Surface mostly wet",     from: "#38bdf8", to: "#0ea5e9" },
-  { level: 5, key: "heavy",    label: "Heavy Rain", range: [0, 1000],       desc: "Flooded surface",        from: "#818cf8", to: "#4f46e5" },
+  { level: 1, key: "no",       label: "Không mưa",    range: [3500, Infinity], desc: "Bề mặt khô thoáng",  from: "#cbd5e1", to: "#94a3b8" },
+  { level: 2, key: "vlight",   label: "Mưa rất nhẹ", range: [3000, 3500],    desc: "Hơi ẩm",          from: "#93c5fd", to: "#60a5fa" },
+  { level: 3, key: "light",    label: "Mưa nhẹ", range: [2000, 3000],    desc: "Có thể tích tụ nước",from: "#60a5fa", to: "#3b82f6" },
+  { level: 4, key: "moderate", label: "Mưa vừa",   range: [1000, 2000],    desc: "Bề mặt hầu như ướt",     from: "#38bdf8", to: "#0ea5e9" },
+  { level: 5, key: "heavy",    label: "Mưa lớn", range: [0, 1000],       desc: "Bề mặt ngập nước",        from: "#818cf8", to: "#4f46e5" },
 ];
 
 const heights = { 1: 36, 2: 64, 3: 92, 4: 124, 5: 156 }; // px
@@ -16,7 +16,6 @@ const getRainLevel = (v) => {
   return rainLevels.find((lv) => v >= lv.range[0] && v < lv.range[1]) || null;
 };
 
-// tạo màu rgba mềm từ hex
 const soft = (hex, a = 0.14) => {
   if (!hex) return `rgba(241,245,249,${a})`;
   let h = hex.replace("#", "");
@@ -29,8 +28,6 @@ const soft = (hex, a = 0.14) => {
 
 export default function RainLevelChart({ rainValue }) {
   const current = getRainLevel(rainValue);
-
-  // Nền card tint theo level hiện tại
   const cardBg = current
     ? `linear-gradient(135deg, ${soft(current.from, 0.18)}, ${soft(current.to, 0.12)})`
     : `linear-gradient(135deg, ${soft("#f1f5f9", 0.7)}, ${soft("#f8fafc", 0.7)})`;
@@ -45,9 +42,9 @@ export default function RainLevelChart({ rainValue }) {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-slate-900">Rain level</h3>
+        <h3 className="text-lg font-semibold text-slate-900">Lượng mưa</h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-600">Current</span>
+          <span className="text-xs text-slate-600">Hiện tại</span>
           <span
             className="text-xs font-semibold px-2 py-1 rounded-lg"
             style={{
@@ -116,7 +113,7 @@ export default function RainLevelChart({ rainValue }) {
             <span className="font-semibold">{current.label}.</span> {current.desc}
           </div>
         ) : (
-          <div className="text-sm text-slate-500">No data for rain sensor.</div>
+          <div className="text-sm text-slate-500">Không có dữ liệu từ cảm biến lượng mưa.</div>
         )}
       </div>
 

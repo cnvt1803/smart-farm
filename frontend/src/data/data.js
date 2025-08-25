@@ -1,5 +1,5 @@
-//import { API_BASE_URL } from "../config"
-const API_BASE_URL = "http://localhost:8000"
+import { API_BASE_URL } from "../config"
+// const API_BASE_URL = "http://localhost:8000"
 
 // Get info about the farms and sensors of user
 const getInfo = async () => {
